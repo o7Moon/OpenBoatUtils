@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "openboatutils",
+  "version": "0.1",
+  "name": "OpenBoatUtils",
+  "description": "Configurable boat physics, from the serverside,",
+  "authors": [
+    "o7Moon"
+  ],
+  "contact": {
+    "repo": "https://github.com/o7Moon/OpenBoatUtilspenBoatUtils"
+  },
+  "license": "MIT",
+  "icon": "assets/openboatutils/OpenBoatUtils.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "dev.o7moon.openboatutils.client.OpenBoatUtilsClient"
+    ],
+    "main": [
+      "dev.o7moon.openboatutils.OpenBoatUtils"
+    ]
+  },
+  "mixins": [
+    "openboatutils.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
