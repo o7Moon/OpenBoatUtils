@@ -7,3 +7,7 @@ Configurable boat physics, from the serverside.
 
 > [!NOTE]
 > `README` under construction! I am currently setting up user and plugin developer documentation, and publishing to modrinth.
+
+
+## How do I use OpenBoatUtils?
+Check the [Wiki](https://github.com/o7Moon/OpenBoatUtils/wiki)!
