@@ -55,10 +55,10 @@ public abstract class BoatMixin {
 
         if (loc == BoatEntity.Location.UNDER_WATER || loc == BoatEntity.Location.UNDER_FLOWING_WATER) {
             if (OpenBoatUtils.waterElevation) {
-                instance.setPosition(instance.getX(), this.waterLevel + 1.0, instance.getZ());
+                instance.setPosition(instance.getX(), this.waterLevel += 1.0, instance.getZ());
                 Vec3d velocity = instance.getVelocity();
-                instance.setVelocity(velocity.x, -1.0, velocity.z);// this is scuffed but with my current goal of having
-                // parity with old BoatUtils this is how it works.
+                instance.setVelocity(velocity.x, 0f, velocity.z);// parity with old boatutils, but maybe in the future
+                // there should be an implementation with different y velocities here.
                 return BoatEntity.Location.IN_WATER;
             }
             return loc;
