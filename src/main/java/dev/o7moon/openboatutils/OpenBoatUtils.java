@@ -78,6 +78,10 @@ public class OpenBoatUtils implements ModInitializer {
             }
         });
 
+        ClientPlayConnectionEvents.INIT.register((handler, client) -> {
+            ResetSettings();
+        });
+
         CommandRegistrationCallback.EVENT.register((dispatcher, registry, environment) -> {
             dispatcher.register(
                     literal("stepsize").then(
