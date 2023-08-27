@@ -2,12 +2,17 @@
 
 
 # OpenBoatUtils
-Configurable boat physics, from the serverside.
+OpenBoatUtils makes boat physics much more customizable, and exposes those settings via Plugin Messages. This means that you can use commands in singleplayer to edit the settings, but in multiplayer the server will have control.
 
+## Features:
+- Configurable step height
+- Configurable slipperiness
+- Configurable "Air Control" which makes the air boat movement identical to the ground movement
+- Configurable Boat Jumping
 
-> [!NOTE]
-> `README` under construction! I am currently setting up user and plugin developer documentation, and publishing to modrinth.
+There is more information about the features and how they work on the [wiki](https://github.com/o7Moon/OpenBoatUtils/wiki).
 
+For plugin developers, the wiki also has [documentation for all of the packets](https://github.com/o7Moon/OpenBoatUtils/wiki/Packets).
 
-## How do I use OpenBoatUtils?
-Check the [Wiki](https://github.com/o7Moon/OpenBoatUtils/wiki)!
+> [!IMPORTANT]
+> Requires [Fabric API](https://modrinth.com/mod/fabric-api).
