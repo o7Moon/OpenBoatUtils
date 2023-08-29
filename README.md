@@ -16,3 +16,7 @@ For plugin developers, the wiki also has [documentation for all of the packets](
 
 > [!IMPORTANT]
 > Requires [Fabric API](https://modrinth.com/mod/fabric-api).
+
+# Credits:
+- Mojang, for accidentally implementing boat stepping in 1.19.4-pre1 
+- BoatHub, for creating the original BoatUtils
