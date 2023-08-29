@@ -1,7 +1,5 @@
 package dev.o7moon.openboatutils;
 
-import java.util.ArrayList;
-
 public enum Modes {
     RALLY,
     RALLY_BLUE,
@@ -11,30 +9,30 @@ public enum Modes {
     public static void setMode(Modes mode) {
         switch (mode){
             case RALLY:
-                OpenBoatUtils.SetAllBlocksSlipperiness(0.98f);
+                OpenBoatUtils.setAllBlocksSlipperiness(0.98f);
                 OpenBoatUtils.setFallDamage(false);
                 OpenBoatUtils.setAirControl(true);
-                OpenBoatUtils.SetStepSize(1.25f);
+                OpenBoatUtils.setStepSize(1.25f);
                 return;
             case RALLY_BLUE:
-                OpenBoatUtils.SetAllBlocksSlipperiness(0.989f);
+                OpenBoatUtils.setAllBlocksSlipperiness(0.989f);
                 OpenBoatUtils.setFallDamage(false);
                 OpenBoatUtils.setAirControl(true);
-                OpenBoatUtils.SetStepSize(1.25f);
+                OpenBoatUtils.setStepSize(1.25f);
                 return;
             case BA:
                 OpenBoatUtils.setFallDamage(false);
                 OpenBoatUtils.setAirControl(true);
-                OpenBoatUtils.SetBlockSlipperiness("minecraft:air", 0.98f);
-                OpenBoatUtils.SetStepSize(1.25f);
+                OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.98f);
+                OpenBoatUtils.setStepSize(1.25f);
                 OpenBoatUtils.setWaterElevation(true);
                 return;
             case PARKOUR:
-                OpenBoatUtils.SetAllBlocksSlipperiness(0.98f);
+                OpenBoatUtils.setAllBlocksSlipperiness(0.98f);
                 OpenBoatUtils.setFallDamage(false);
                 OpenBoatUtils.setAirControl(true);
                 OpenBoatUtils.setJumpForce(0.36f);
-                OpenBoatUtils.SetStepSize(0.5f);
+                OpenBoatUtils.setStepSize(0.5f);
                 return;
         }
     }

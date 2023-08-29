@@ -1,6 +1,6 @@
 package dev.o7moon.openboatutils;
 
-public enum Packets {
+public enum ClientboundPackets {
     RESET,
     SET_STEP_HEIGHT,
     SET_DEFAULT_SLIPPERINESS,

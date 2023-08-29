@@ -1,6 +1,5 @@
 package dev.o7moon.openboatutils;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -10,11 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.command.argument.EnumArgumentType;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -28,26 +23,43 @@ import java.util.List;
 public class OpenBoatUtils implements ModInitializer {
     @Override
     public void onInitialize() {
+        ServerPlayNetworking.registerGlobalReceiver(settingsChannel, (server, player, handler, buf, responseSender) -> {
+            try {
+                short packetID = buf.readShort();
+                switch (packetID) {
+                    case 0:
+                        int versionID = buf.readInt();
+                        LOG.info("OpenBoatUtils version received by server: "+versionID);
+                        return;
+                }
+            } catch (Exception E) {
+                LOG.error("Error when handling serverbound openboatutils packet: ");
+                for (StackTraceElement e : E.getStackTrace()){
+                    LOG.error(e.toString());
+                }
+            }
+        });
+
         ClientPlayNetworking.registerGlobalReceiver(settingsChannel, (client, handler, buf, responseSender) -> {
             try {
                 short packetID = buf.readShort();
                 switch (packetID) {
                     case 0:
-                        ResetSettings();
+                        resetSettings();
                         return;
                     case 1:
                         float stepSize = buf.readFloat();
-                        SetStepSize(stepSize);
+                        setStepSize(stepSize);
                         return;
                     case 2:
                         float slipperiness = buf.readFloat();
-                        SetAllBlocksSlipperiness(slipperiness);
+                        setAllBlocksSlipperiness(slipperiness);
                         return;
                     case 3:
                         slipperiness = buf.readFloat();
                         String blocks = buf.readString();
                         String[] blocksArray = blocks.split(",");
-                        SetBlocksSlipperiness(Arrays.asList(blocksArray), slipperiness);
+                        setBlocksSlipperiness(Arrays.asList(blocksArray), slipperiness);
                         return;
                     case 4:
                         boolean fallDamage = buf.readBoolean();
@@ -71,7 +83,7 @@ public class OpenBoatUtils implements ModInitializer {
                         return;
                 }
             } catch (Exception E) {
-                LOG.error("Error when handling boatutils packet: ");
+                LOG.error("Error when handling clientbound openboatutils packet: ");
                 for (StackTraceElement e : E.getStackTrace()){
                     LOG.error(e.toString());
                 }
@@ -79,7 +91,11 @@ public class OpenBoatUtils implements ModInitializer {
         });
 
         ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-            ResetSettings();
+            resetSettings();
+        });
+
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            sendVersionPacket();
         });
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registry, environment) -> {
@@ -90,7 +106,7 @@ public class OpenBoatUtils implements ModInitializer {
                                 ServerPlayerEntity player = ctx.getSource().getPlayer();
                                 if (player == null) return 0;
                                 PacketByteBuf packet = PacketByteBufs.create();
-                                packet.writeShort(Packets.SET_STEP_HEIGHT.ordinal());
+                                packet.writeShort(ClientboundPackets.SET_STEP_HEIGHT.ordinal());
                                 packet.writeFloat(FloatArgumentType.getFloat(ctx, "size"));
                                 ServerPlayNetworking.send(player, settingsChannel, packet);
                                 return 1;
@@ -103,7 +119,7 @@ public class OpenBoatUtils implements ModInitializer {
                         ServerPlayerEntity player = ctx.getSource().getPlayer();
                         if (player == null) return 0;
                         PacketByteBuf packet = PacketByteBufs.create();
-                        packet.writeShort(Packets.RESET.ordinal());
+                        packet.writeShort(ClientboundPackets.RESET.ordinal());
                         ServerPlayNetworking.send(player, settingsChannel, packet);
                         return 1;
                     })
@@ -114,7 +130,7 @@ public class OpenBoatUtils implements ModInitializer {
                             ServerPlayerEntity player = ctx.getSource().getPlayer();
                             if (player == null) return 0;
                             PacketByteBuf packet = PacketByteBufs.create();
-                            packet.writeShort(Packets.SET_DEFAULT_SLIPPERINESS.ordinal());
+                            packet.writeShort(ClientboundPackets.SET_DEFAULT_SLIPPERINESS.ordinal());
                             packet.writeFloat(FloatArgumentType.getFloat(ctx, "slipperiness"));
                             ServerPlayNetworking.send(player, settingsChannel, packet);
                             return 1;
@@ -127,7 +143,7 @@ public class OpenBoatUtils implements ModInitializer {
                         ServerPlayerEntity player = ctx.getSource().getPlayer();
                         if (player == null) return 0;
                         PacketByteBuf packet = PacketByteBufs.create();
-                        packet.writeShort(Packets.SET_BLOCKS_SLIPPERINESS.ordinal());
+                        packet.writeShort(ClientboundPackets.SET_BLOCKS_SLIPPERINESS.ordinal());
                         packet.writeFloat(FloatArgumentType.getFloat(ctx,"slipperiness"));
                         packet.writeString(StringArgumentType.getString(ctx,"blocks").trim());
                         ServerPlayNetworking.send(player, settingsChannel, packet);
@@ -140,7 +156,7 @@ public class OpenBoatUtils implements ModInitializer {
                         ServerPlayerEntity player = ctx.getSource().getPlayer();
                         if (player == null) return 0;
                         PacketByteBuf packet = PacketByteBufs.create();
-                        packet.writeShort(Packets.SET_AIR_CONTROL.ordinal());
+                        packet.writeShort(ClientboundPackets.SET_AIR_CONTROL.ordinal());
                         packet.writeBoolean(BoolArgumentType.getBool(ctx, "enabled"));
                         ServerPlayNetworking.send(player, settingsChannel, packet);
                         return 1;
@@ -152,7 +168,7 @@ public class OpenBoatUtils implements ModInitializer {
                         ServerPlayerEntity player = ctx.getSource().getPlayer();
                         if (player == null) return 0;
                         PacketByteBuf packet = PacketByteBufs.create();
-                        packet.writeShort(Packets.SET_BOAT_WATER_ELEVATION.ordinal());
+                        packet.writeShort(ClientboundPackets.SET_BOAT_WATER_ELEVATION.ordinal());
                         packet.writeBoolean(BoolArgumentType.getBool(ctx, "enabled"));
                         ServerPlayNetworking.send(player, settingsChannel, packet);
                         return 1;
@@ -164,7 +180,7 @@ public class OpenBoatUtils implements ModInitializer {
                         ServerPlayerEntity player = ctx.getSource().getPlayer();
                         if (player == null) return 0;
                         PacketByteBuf packet = PacketByteBufs.create();
-                        packet.writeShort(Packets.SET_BOAT_FALL_DAMAGE.ordinal());
+                        packet.writeShort(ClientboundPackets.SET_BOAT_FALL_DAMAGE.ordinal());
                         packet.writeBoolean(BoolArgumentType.getBool(ctx, "enabled"));
                         ServerPlayNetworking.send(player, settingsChannel, packet);
                         return 1;
@@ -176,7 +192,7 @@ public class OpenBoatUtils implements ModInitializer {
                                 ServerPlayerEntity player = ctx.getSource().getPlayer();
                                 if (player == null) return 0;
                                 PacketByteBuf packet = PacketByteBufs.create();
-                                packet.writeShort(Packets.SET_BOAT_JUMP_FORCE.ordinal());
+                                packet.writeShort(ClientboundPackets.SET_BOAT_JUMP_FORCE.ordinal());
                                 packet.writeFloat(FloatArgumentType.getFloat(ctx, "force"));
                                 ServerPlayNetworking.send(player, settingsChannel, packet);
                                 return 1;
@@ -200,7 +216,7 @@ public class OpenBoatUtils implements ModInitializer {
                             return 0;
                         }
                         PacketByteBuf packet = PacketByteBufs.create();
-                        packet.writeShort(Packets.SET_MODE.ordinal());
+                        packet.writeShort(ClientboundPackets.SET_MODE.ordinal());
                         packet.writeShort(mode.ordinal());
                         ServerPlayNetworking.send(player, settingsChannel, packet);
                         return 1;
@@ -211,6 +227,8 @@ public class OpenBoatUtils implements ModInitializer {
     }
 
     public static final Logger LOG = LoggerFactory.getLogger("OpenBoatUtils");
+
+    public static final int VERSION = 0;
 
     public static final Identifier settingsChannel = new Identifier("openboatutils","settings");
 
@@ -233,7 +251,7 @@ public class OpenBoatUtils implements ModInitializer {
     }};
 
 
-    public static void ResetSettings(){
+    public static void resetSettings(){
         enabled = false;
         stepSize = 0f;
         fallDamage = true;
@@ -250,33 +268,33 @@ public class OpenBoatUtils implements ModInitializer {
         }};
     }
 
-    public static void SetStepSize(float stepsize){
+    public static void setStepSize(float stepsize){
         enabled = true;
         stepSize = stepsize;
     }
 
-    public static void SetBlocksSlipperiness(List<String> blocks, float slipperiness){
+    public static void setBlocksSlipperiness(List<String> blocks, float slipperiness){
         enabled = true;
         for (String block : blocks) {
-            SetBlockSlipperiness(block, slipperiness);
+            setBlockSlipperiness(block, slipperiness);
         }
     }
 
-    public static void SetAllBlocksSlipperiness(float slipperiness){
+    public static void setAllBlocksSlipperiness(float slipperiness){
         enabled = true;
         defaultSlipperiness = slipperiness;
     }
 
-    static void SetBlockSlipperiness(String block, float slipperiness){
+    static void setBlockSlipperiness(String block, float slipperiness){
         slipperinessMap.put(block, slipperiness);
     }
 
-    public static float GetBlockSlipperiness(String block){
+    public static float getBlockSlipperiness(String block){
         if (slipperinessMap.containsKey(block)) return slipperinessMap.get(block);
         return defaultSlipperiness;
     }
 
-    public static float GetStepSize() {
+    public static float getStepSize() {
         return stepSize;
     }
 
@@ -298,5 +316,12 @@ public class OpenBoatUtils implements ModInitializer {
     public static void setJumpForce(float newValue) {
         enabled = true;
         jumpForce = newValue;
+    }
+
+    public static void sendVersionPacket(){
+        PacketByteBuf packet = PacketByteBufs.create();
+        packet.writeShort(ServerboundPackets.VERSION.ordinal());
+        packet.writeInt(VERSION);
+        ClientPlayNetworking.send(settingsChannel, packet);
     }
 }

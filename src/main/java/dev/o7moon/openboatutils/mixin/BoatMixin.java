@@ -1,11 +1,8 @@
 package dev.o7moon.openboatutils.mixin;
 
 import dev.o7moon.openboatutils.OpenBoatUtils;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.mixin.event.interaction.client.KeyBindingAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
@@ -51,7 +48,7 @@ public abstract class BoatMixin {
 
         if (!boat.equals(instance)) return loc;
 
-        instance.setStepHeight(OpenBoatUtils.GetStepSize());
+        instance.setStepHeight(OpenBoatUtils.getStepSize());
 
         if (loc == BoatEntity.Location.UNDER_WATER || loc == BoatEntity.Location.UNDER_FLOWING_WATER) {
             if (OpenBoatUtils.waterElevation) {
@@ -73,7 +70,7 @@ public abstract class BoatMixin {
         }
 
         if (loc == BoatEntity.Location.IN_AIR && OpenBoatUtils.airControl) {
-            this.nearbySlipperiness = OpenBoatUtils.GetBlockSlipperiness("minecraft:air");
+            this.nearbySlipperiness = OpenBoatUtils.getBlockSlipperiness("minecraft:air");
             return BoatEntity.Location.ON_LAND;
         }
 
@@ -88,7 +85,7 @@ public abstract class BoatMixin {
     @Redirect(method = "getNearbySlipperiness", at = @At(value="INVOKE",target="Lnet/minecraft/block/Block;getSlipperiness()F"))
     float getFriction(Block block) {
         if (!OpenBoatUtils.enabled) return block.getSlipperiness();
-        return OpenBoatUtils.GetBlockSlipperiness(Registries.BLOCK.getId(block).toString());
+        return OpenBoatUtils.getBlockSlipperiness(Registries.BLOCK.getId(block).toString());
     }
 
     @Inject(method = "fall", at = @At("HEAD"), cancellable = true)
