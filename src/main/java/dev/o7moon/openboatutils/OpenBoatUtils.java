@@ -51,8 +51,8 @@ public class OpenBoatUtils implements ModInitializer {
     public static boolean airControl = false;
     public static float defaultSlipperiness = 0.6f;
     public static float jumpForce = 0f;
-
     public static float stepSize = 0f;
+    public static double gravityForce = 0.03999999910593033;// funny rounding
 
     public static HashMap<String, Float> slipperinessMap = new HashMap<>(){{
         put("minecraft:slime",0.8f);
@@ -71,6 +71,7 @@ public class OpenBoatUtils implements ModInitializer {
         defaultSlipperiness = 0.6f;
         airControl = false;
         jumpForce = 0f;
+        gravityForce = 0.03999999910593033;
         slipperinessMap = new HashMap<>(){{
             put("minecraft:slime",0.8f);
             put("minecraft:ice",0.98f);
@@ -135,5 +136,10 @@ public class OpenBoatUtils implements ModInitializer {
         packet.writeShort(ServerboundPackets.VERSION.ordinal());
         packet.writeInt(VERSION);
         ClientPlayNetworking.send(settingsChannel, packet);
+    }
+
+    public static void setGravityForce(double g){
+        enabled = true;
+        gravityForce = g;
     }
 }
