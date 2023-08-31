@@ -1,6 +1,7 @@
 package dev.o7moon.openboatutils;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -139,6 +140,18 @@ public class SingleplayerCommands {
                         return 1;
                     }))
 
+            );
+
+            dispatcher.register(
+                    literal("boatgravity").then(argument("gravity", DoubleArgumentType.doubleArg()).executes(ctx->{
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.SET_GRAVITY.ordinal());
+                        packet.writeDouble(DoubleArgumentType.getDouble(ctx, "gravity"));
+                        ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                        return 1;
+                    }))
             );
         });
     }

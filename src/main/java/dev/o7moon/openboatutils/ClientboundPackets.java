@@ -13,7 +13,8 @@ public enum ClientboundPackets {
     SET_BOAT_WATER_ELEVATION,
     SET_AIR_CONTROL,
     SET_BOAT_JUMP_FORCE,
-    SET_MODE;
+    SET_MODE,
+    SET_GRAVITY;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -56,6 +57,10 @@ public enum ClientboundPackets {
                     case 8:
                         short mode = buf.readShort();
                         Modes.setMode(Modes.values()[mode]);
+                        return;
+                    case 9:
+                        double gravity = buf.readDouble();
+                        OpenBoatUtils.setGravityForce(gravity);
                         return;
                 }
             } catch (Exception E) {
