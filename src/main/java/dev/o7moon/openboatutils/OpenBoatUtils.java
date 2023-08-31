@@ -23,72 +23,11 @@ import java.util.List;
 public class OpenBoatUtils implements ModInitializer {
     @Override
     public void onInitialize() {
-        ServerPlayNetworking.registerGlobalReceiver(settingsChannel, (server, player, handler, buf, responseSender) -> {
-            try {
-                short packetID = buf.readShort();
-                switch (packetID) {
-                    case 0:
-                        int versionID = buf.readInt();
-                        LOG.info("OpenBoatUtils version received by server: "+versionID);
-                        return;
-                }
-            } catch (Exception E) {
-                LOG.error("Error when handling serverbound openboatutils packet: ");
-                for (StackTraceElement e : E.getStackTrace()){
-                    LOG.error(e.toString());
-                }
-            }
-        });
+        ServerboundPackets.registerHandlers();
 
-        ClientPlayNetworking.registerGlobalReceiver(settingsChannel, (client, handler, buf, responseSender) -> {
-            try {
-                short packetID = buf.readShort();
-                switch (packetID) {
-                    case 0:
-                        resetSettings();
-                        return;
-                    case 1:
-                        float stepSize = buf.readFloat();
-                        setStepSize(stepSize);
-                        return;
-                    case 2:
-                        float slipperiness = buf.readFloat();
-                        setAllBlocksSlipperiness(slipperiness);
-                        return;
-                    case 3:
-                        slipperiness = buf.readFloat();
-                        String blocks = buf.readString();
-                        String[] blocksArray = blocks.split(",");
-                        setBlocksSlipperiness(Arrays.asList(blocksArray), slipperiness);
-                        return;
-                    case 4:
-                        boolean fallDamage = buf.readBoolean();
-                        setFallDamage(fallDamage);
-                        return;
-                    case 5:
-                        boolean waterElevation = buf.readBoolean();
-                        setWaterElevation(waterElevation);
-                        return;
-                    case 6:
-                        boolean airControl = buf.readBoolean();
-                        setAirControl(airControl);
-                        return;
-                    case 7:
-                        float jumpForce = buf.readFloat();
-                        setJumpForce(jumpForce);
-                        return;
-                    case 8:
-                        short mode = buf.readShort();
-                        Modes.setMode(Modes.values()[mode]);
-                        return;
-                }
-            } catch (Exception E) {
-                LOG.error("Error when handling clientbound openboatutils packet: ");
-                for (StackTraceElement e : E.getStackTrace()){
-                    LOG.error(e.toString());
-                }
-            }
-        });
+        ClientboundPackets.registerHandlers();
+
+        SingleplayerCommands.registerCommands();
 
         ClientPlayConnectionEvents.INIT.register((handler, client) -> {
             resetSettings();
@@ -97,8 +36,6 @@ public class OpenBoatUtils implements ModInitializer {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             sendVersionPacket();
         });
-
-        SingleplayerCommands.registerCommands();
     }
 
     public static final Logger LOG = LoggerFactory.getLogger("OpenBoatUtils");
