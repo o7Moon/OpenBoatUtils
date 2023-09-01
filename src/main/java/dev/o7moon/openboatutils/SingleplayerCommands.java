@@ -153,6 +153,58 @@ public class SingleplayerCommands {
                         return 1;
                     }))
             );
+
+            dispatcher.register(
+                    literal("setyawaccel").then(argument("accel", FloatArgumentType.floatArg()).executes(ctx -> {
+                                ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                if (player == null) return 0;
+                                PacketByteBuf packet = PacketByteBufs.create();
+                                packet.writeShort(ClientboundPackets.SET_YAW_ACCEL.ordinal());
+                                packet.writeFloat(FloatArgumentType.getFloat(ctx, "accel"));
+                                ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                                return 1;
+                            })
+                    )
+            );
+
+            dispatcher.register(
+                    literal("setforwardaccel").then(argument("accel", FloatArgumentType.floatArg()).executes(ctx -> {
+                                ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                if (player == null) return 0;
+                                PacketByteBuf packet = PacketByteBufs.create();
+                                packet.writeShort(ClientboundPackets.SET_FORWARD_ACCEL.ordinal());
+                                packet.writeFloat(FloatArgumentType.getFloat(ctx, "accel"));
+                                ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                                return 1;
+                            })
+                    )
+            );
+
+            dispatcher.register(
+                    literal("setbackwardaccel").then(argument("accel", FloatArgumentType.floatArg()).executes(ctx -> {
+                                ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                if (player == null) return 0;
+                                PacketByteBuf packet = PacketByteBufs.create();
+                                packet.writeShort(ClientboundPackets.SET_BACKWARD_ACCEL.ordinal());
+                                packet.writeFloat(FloatArgumentType.getFloat(ctx, "accel"));
+                                ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                                return 1;
+                            })
+                    )
+            );
+
+            dispatcher.register(
+                    literal("setturnforwardaccel").then(argument("accel", FloatArgumentType.floatArg()).executes(ctx -> {
+                                ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                if (player == null) return 0;
+                                PacketByteBuf packet = PacketByteBufs.create();
+                                packet.writeShort(ClientboundPackets.SET_TURN_ACCEL.ordinal());
+                                packet.writeFloat(FloatArgumentType.getFloat(ctx, "accel"));
+                                ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                                return 1;
+                            })
+                    )
+            );
         });
     }
 }

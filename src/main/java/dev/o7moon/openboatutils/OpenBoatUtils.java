@@ -52,7 +52,11 @@ public class OpenBoatUtils implements ModInitializer {
     public static float defaultSlipperiness = 0.6f;
     public static float jumpForce = 0f;
     public static float stepSize = 0f;
-    public static double gravityForce = 0.03999999910593033;// funny rounding
+    public static double gravityForce = -0.03999999910593033;// funny rounding
+    public static float yawAcceleration = 1.0f;
+    public static float forwardsAcceleration = 0.04f;
+    public static float backwardsAcceleration = 0.005f;
+    public static float turningForwardsAcceleration = 0.005f;
 
     public static HashMap<String, Float> slipperinessMap = new HashMap<>(){{
         put("minecraft:slime",0.8f);
@@ -71,7 +75,11 @@ public class OpenBoatUtils implements ModInitializer {
         defaultSlipperiness = 0.6f;
         airControl = false;
         jumpForce = 0f;
-        gravityForce = 0.03999999910593033;
+        gravityForce = -0.03999999910593033;
+        yawAcceleration = 1.0f;
+        forwardsAcceleration = 0.04f;
+        backwardsAcceleration = 0.005f;
+        turningForwardsAcceleration = 0.005f;
         slipperinessMap = new HashMap<>(){{
             put("minecraft:slime",0.8f);
             put("minecraft:ice",0.98f);
@@ -141,5 +149,25 @@ public class OpenBoatUtils implements ModInitializer {
     public static void setGravityForce(double g){
         enabled = true;
         gravityForce = g;
+    }
+
+    public static void setYawAcceleration(float accel){
+        enabled = true;
+        yawAcceleration = accel;
+    }
+
+    public static void setForwardsAcceleration(float accel){
+        enabled = true;
+        forwardsAcceleration = accel;
+    }
+
+    public static void setBackwardsAcceleration(float accel){
+        enabled = true;
+        backwardsAcceleration = accel;
+    }
+
+    public static void setTurningForwardsAcceleration(float accel){
+        enabled = true;
+        turningForwardsAcceleration = accel;
     }
 }
