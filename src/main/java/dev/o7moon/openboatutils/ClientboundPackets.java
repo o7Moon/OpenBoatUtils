@@ -14,7 +14,11 @@ public enum ClientboundPackets {
     SET_AIR_CONTROL,
     SET_BOAT_JUMP_FORCE,
     SET_MODE,
-    SET_GRAVITY;
+    SET_GRAVITY,
+    SET_YAW_ACCEL,
+    SET_FORWARD_ACCEL,
+    SET_BACKWARD_ACCEL,
+    SET_TURN_ACCEL;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -61,6 +65,22 @@ public enum ClientboundPackets {
                     case 9:
                         double gravity = buf.readDouble();
                         OpenBoatUtils.setGravityForce(gravity);
+                        return;
+                    case 10:
+                        float accel = buf.readFloat();
+                        OpenBoatUtils.setYawAcceleration(accel);
+                        return;
+                    case 11:
+                        accel = buf.readFloat();
+                        OpenBoatUtils.setForwardsAcceleration(accel);
+                        return;
+                    case 12:
+                        accel = buf.readFloat();
+                        OpenBoatUtils.setBackwardsAcceleration(accel);
+                        return;
+                    case 13:
+                        accel = buf.readFloat();
+                        OpenBoatUtils.setTurningForwardsAcceleration(accel);
                         return;
                 }
             } catch (Exception E) {

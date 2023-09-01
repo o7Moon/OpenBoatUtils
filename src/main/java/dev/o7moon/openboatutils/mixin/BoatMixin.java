@@ -7,14 +7,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BoatEntity.class)
@@ -33,6 +32,8 @@ public abstract class BoatMixin {
     @Shadow
     double waterLevel;
 
+    @Shadow
+    float yawVelocity;
     @Redirect(method = {"tick","getPaddleSoundEvent"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;checkLocation()Lnet/minecraft/entity/vehicle/BoatEntity$Location;"))
     BoatEntity.Location hookCheckLocation(BoatEntity instance) {
         instance.setStepHeight(0f);
@@ -99,5 +100,36 @@ public abstract class BoatMixin {
         if (!OpenBoatUtils.enabled) return e;
 
         return OpenBoatUtils.gravityForce;
+    }
+
+    @Redirect(method = "updatePaddles", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;yawVelocity:F", opcode = Opcodes.PUTFIELD))
+    private void redirectYawVelocityIncrement(BoatEntity boat, float yawVelocity) {
+        if (!OpenBoatUtils.enabled) {
+            this.yawVelocity = yawVelocity;
+            return;
+        }
+        float original_delta = yawVelocity - this.yawVelocity;
+        // sign isn't needed here because the vanilla acceleration is exactly 1,
+        // but I suppose this helps if mojang ever decides to change that value for some reason
+        this.yawVelocity += MathHelper.sign(original_delta) * OpenBoatUtils.yawAcceleration;
+    }
+
+    // a whole lotta modifyconstants because mojang put the acceleration values in literals
+    @ModifyConstant(method = "updatePaddles", constant = @Constant(floatValue = 0.04f, ordinal = 0))
+    private float forwardsAccel(float original) {
+        if (!OpenBoatUtils.enabled) return original;
+        return OpenBoatUtils.forwardsAcceleration;
+    }
+
+    @ModifyConstant(method = "updatePaddles", constant = @Constant(floatValue = 0.005f, ordinal = 0))
+    private float turnAccel(float original) {
+        if (!OpenBoatUtils.enabled) return original;
+        return OpenBoatUtils.turningForwardsAcceleration;
+    }
+
+    @ModifyConstant(method = "updatePaddles", constant = @Constant(floatValue = 0.005f, ordinal = 1))
+    private float backwardsAccel(float original) {
+        if (!OpenBoatUtils.enabled) return original;
+        return OpenBoatUtils.backwardsAcceleration;
     }
 }
