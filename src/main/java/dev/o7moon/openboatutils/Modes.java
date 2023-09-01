@@ -4,7 +4,8 @@ public enum Modes {
     RALLY,
     RALLY_BLUE,
     BA,
-    PARKOUR;
+    PARKOUR,
+    BA_BLUE;
 
     public static void setMode(Modes mode) {
         switch (mode){
@@ -33,6 +34,13 @@ public enum Modes {
                 OpenBoatUtils.setAirControl(true);
                 OpenBoatUtils.setJumpForce(0.36f);
                 OpenBoatUtils.setStepSize(0.5f);
+                return;
+            case BA_BLUE:
+                OpenBoatUtils.setFallDamage(false);
+                OpenBoatUtils.setAirControl(true);
+                OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.989f);
+                OpenBoatUtils.setStepSize(1.25f);
+                OpenBoatUtils.setWaterElevation(true);
                 return;
         }
     }
