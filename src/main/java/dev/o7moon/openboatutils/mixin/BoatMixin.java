@@ -34,6 +34,10 @@ public abstract class BoatMixin {
 
     @Shadow
     float yawVelocity;
+    @Shadow
+    boolean pressingForward;
+    @Shadow
+    boolean pressingBack;
     @Redirect(method = {"tick","getPaddleSoundEvent"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;checkLocation()Lnet/minecraft/entity/vehicle/BoatEntity$Location;"))
     BoatEntity.Location hookCheckLocation(BoatEntity instance) {
         instance.setStepHeight(0f);
@@ -131,5 +135,17 @@ public abstract class BoatMixin {
     private float backwardsAccel(float original) {
         if (!OpenBoatUtils.enabled) return original;
         return OpenBoatUtils.backwardsAcceleration;
+    }
+
+    @Redirect(method = "updatePaddles", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;pressingForward:Z", opcode = Opcodes.GETFIELD, ordinal = 0))
+    private boolean pressingForwardHook(BoatEntity instance) {
+        if (!OpenBoatUtils.enabled || !OpenBoatUtils.allowAccelStacking) return this.pressingForward;
+        return false;
+    }
+
+    @Redirect(method = "updatePaddles", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;pressingBack:Z", opcode = Opcodes.GETFIELD, ordinal = 0))
+    private boolean pressingBackHook(BoatEntity instance) {
+        if (!OpenBoatUtils.enabled || !OpenBoatUtils.allowAccelStacking) return this.pressingBack;
+        return false;
     }
 }
