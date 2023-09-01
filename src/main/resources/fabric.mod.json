@@ -3,15 +3,16 @@
   "id": "openboatutils",
   "version": "0.2",
   "name": "OpenBoatUtils",
-  "description": "Configurable boat physics, from the serverside,",
+  "description": "Configurable boat physics, from the serverside. Check the wiki (website button) for more information.",
   "authors": [
     "o7Moon"
   ],
   "contact": {
-    "repo": "https://github.com/o7Moon/OpenBoatUtilspenBoatUtils"
+    "repo": "https://github.com/o7Moon/OpenBoatUtils",
+    "homepage": "https://github.com/o7Moon/OpenBoatUtils/wiki"
   },
   "license": "MIT",
-  "icon": "assets/openboatutils/OpenBoatUtils.png",
+  "icon": "assets/openboatutils/OpenBoatUtils_small_square.png",
   "environment": "*",
   "entrypoints": {
     "client": [
