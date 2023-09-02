@@ -7,7 +7,8 @@
     "ServerPlayNetworkHandlerMixin"
   ],
   "client": [
-    "BoatMixin"
+    "BoatMixin",
+    "ClientWorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1
