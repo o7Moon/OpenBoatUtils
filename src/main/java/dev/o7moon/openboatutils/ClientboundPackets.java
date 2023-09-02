@@ -19,7 +19,8 @@ public enum ClientboundPackets {
     SET_FORWARD_ACCEL,
     SET_BACKWARD_ACCEL,
     SET_TURN_ACCEL,
-    ALLOW_ACCEL_STACKING;
+    ALLOW_ACCEL_STACKING,
+    RESEND_VERSION;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -86,6 +87,9 @@ public enum ClientboundPackets {
                     case 14:
                         boolean allowed = buf.readBoolean();
                         OpenBoatUtils.setAllowAccelStacking(allowed);
+                        return;
+                    case 15:
+                        OpenBoatUtils.sendVersionPacket();
                         return;
                 }
             } catch (Exception E) {
