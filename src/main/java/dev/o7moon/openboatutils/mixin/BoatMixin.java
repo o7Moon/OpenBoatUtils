@@ -28,6 +28,10 @@ public abstract class BoatMixin {
     @Shadow
     abstract BoatEntity.Location checkLocation();
     @Shadow
+    BoatEntity.Location location;
+    @Shadow
+    float velocityDecay;
+    @Shadow
     float nearbySlipperiness;
     @Shadow
     double waterLevel;
@@ -147,5 +151,19 @@ public abstract class BoatMixin {
     private boolean pressingBackHook(BoatEntity instance) {
         if (!OpenBoatUtils.enabled || !OpenBoatUtils.allowAccelStacking) return this.pressingBack;
         return false;
+    }
+
+    // UNDER_FLOWING_WATER velocity decay
+    @Redirect(method="updateVelocity", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;velocityDecay:F", opcode = Opcodes.PUTFIELD, ordinal = 2))
+    private void velocityDecayHook1(BoatEntity boat, float orig) {
+        if (!OpenBoatUtils.enabled || !OpenBoatUtils.underwaterControl) velocityDecay = orig;
+        else velocityDecay = OpenBoatUtils.getBlockSlipperiness("minecraft:water");
+    }
+
+    // UNDER_WATER velocity decay
+    @Redirect(method="updateVelocity", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;velocityDecay:F", opcode = Opcodes.PUTFIELD, ordinal = 3))
+    private void velocityDecayHook2(BoatEntity boat, float orig) {
+        if (!OpenBoatUtils.enabled || !OpenBoatUtils.underwaterControl) velocityDecay = orig;
+        else velocityDecay = OpenBoatUtils.getBlockSlipperiness("minecraft:water");
     }
 }
