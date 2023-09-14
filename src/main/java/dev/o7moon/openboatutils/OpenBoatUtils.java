@@ -40,7 +40,7 @@ public class OpenBoatUtils implements ModInitializer {
 
     public static final Logger LOG = LoggerFactory.getLogger("OpenBoatUtils");
 
-    public static final int VERSION = 3;
+    public static final int VERSION = 4;
 
     public static final Identifier settingsChannel = new Identifier("openboatutils","settings");
 
@@ -58,6 +58,7 @@ public class OpenBoatUtils implements ModInitializer {
     public static float backwardsAcceleration = 0.005f;
     public static float turningForwardsAcceleration = 0.005f;
     public static boolean allowAccelStacking = false;
+    public static boolean underwaterControl = false;
 
     public static HashMap<String, Float> slipperinessMap = new HashMap<>(){{
         put("minecraft:slime",0.8f);
@@ -82,6 +83,7 @@ public class OpenBoatUtils implements ModInitializer {
         backwardsAcceleration = 0.005f;
         turningForwardsAcceleration = 0.005f;
         allowAccelStacking = false;
+        underwaterControl = false;
         slipperinessMap = new HashMap<>(){{
             put("minecraft:slime",0.8f);
             put("minecraft:ice",0.98f);
@@ -176,5 +178,10 @@ public class OpenBoatUtils implements ModInitializer {
     public static void setAllowAccelStacking(boolean value) {
         enabled = true;
         allowAccelStacking = value;
+    }
+
+    public static void setUnderwaterControl(boolean value) {
+        enabled = true;
+        underwaterControl = value;
     }
 }

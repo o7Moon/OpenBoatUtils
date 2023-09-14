@@ -226,6 +226,18 @@ public class SingleplayerCommands {
                 ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
                 return 1;
             }));
+
+            dispatcher.register(
+                literal("underwatercontrol").then(argument("enabled",BoolArgumentType.bool()).executes(ctx -> {
+                    ServerPlayerEntity player = ctx.getSource().getPlayer();
+                    if (player == null) return 0;
+                    PacketByteBuf packet = PacketByteBufs.create();
+                    packet.writeShort(ClientboundPackets.SET_UNDERWATER_CONTROL.ordinal());
+                    packet.writeBoolean(BoolArgumentType.getBool(ctx, "enabled"));
+                    ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                    return 1;
+                }))
+            );
         });
     }
 }

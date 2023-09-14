@@ -20,7 +20,8 @@ public enum ClientboundPackets {
     SET_BACKWARD_ACCEL,
     SET_TURN_ACCEL,
     ALLOW_ACCEL_STACKING,
-    RESEND_VERSION;
+    RESEND_VERSION,
+    SET_UNDERWATER_CONTROL;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -90,6 +91,10 @@ public enum ClientboundPackets {
                         return;
                     case 15:
                         OpenBoatUtils.sendVersionPacket();
+                        return;
+                    case 16:
+                        boolean enabled = buf.readBoolean();
+                        OpenBoatUtils.setUnderwaterControl(enabled);
                         return;
                 }
             } catch (Exception E) {
