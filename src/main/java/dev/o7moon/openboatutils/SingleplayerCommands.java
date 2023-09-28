@@ -238,6 +238,18 @@ public class SingleplayerCommands {
                     return 1;
                 }))
             );
+
+            dispatcher.register(
+                    literal("surfacewatercontrol").then(argument("enabled", BoolArgumentType.bool()).executes(ctx -> {
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.SET_SURFACE_WATER_CONTROL.ordinal());
+                        packet.writeBoolean(BoolArgumentType.getBool(ctx, "enabled"));
+                        ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                        return 1;
+                    }))
+            );
         });
     }
 }

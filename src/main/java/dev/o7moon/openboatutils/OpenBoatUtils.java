@@ -59,6 +59,7 @@ public class OpenBoatUtils implements ModInitializer {
     public static float turningForwardsAcceleration = 0.005f;
     public static boolean allowAccelStacking = false;
     public static boolean underwaterControl = false;
+    public static boolean surfaceWaterControl = false;
 
     public static HashMap<String, Float> slipperinessMap = new HashMap<>(){{
         put("minecraft:slime",0.8f);
@@ -84,6 +85,7 @@ public class OpenBoatUtils implements ModInitializer {
         turningForwardsAcceleration = 0.005f;
         allowAccelStacking = false;
         underwaterControl = false;
+        surfaceWaterControl = false;
         slipperinessMap = new HashMap<>(){{
             put("minecraft:slime",0.8f);
             put("minecraft:ice",0.98f);
@@ -183,5 +185,10 @@ public class OpenBoatUtils implements ModInitializer {
     public static void setUnderwaterControl(boolean value) {
         enabled = true;
         underwaterControl = value;
+    }
+
+    public static void setSurfaceWaterControl(boolean value) {
+        enabled = true;
+        surfaceWaterControl = value;
     }
 }
