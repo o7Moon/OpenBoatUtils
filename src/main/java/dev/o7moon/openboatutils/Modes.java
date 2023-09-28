@@ -5,7 +5,9 @@ public enum Modes {
     RALLY_BLUE,
     BA,
     PARKOUR,
-    BA_BLUE;
+    BA_BLUE,
+    PARKOUR_BLUE,
+    LEGACY_BA;
 
     public static void setMode(Modes mode) {
         switch (mode){
@@ -39,6 +41,19 @@ public enum Modes {
                 OpenBoatUtils.setFallDamage(false);
                 OpenBoatUtils.setAirControl(true);
                 OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.989f);
+                OpenBoatUtils.setStepSize(1.25f);
+                OpenBoatUtils.setWaterElevation(true);
+                return;
+            case PARKOUR_BLUE:
+                OpenBoatUtils.setAllBlocksSlipperiness(0.989f);
+                OpenBoatUtils.setFallDamage(false);
+                OpenBoatUtils.setAirControl(true);
+                OpenBoatUtils.setJumpForce(0.36f);
+                OpenBoatUtils.setStepSize(0.5f);
+                return;
+            case LEGACY_BA:
+                OpenBoatUtils.setAirControl(true);
+                OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.98f);
                 OpenBoatUtils.setStepSize(1.25f);
                 OpenBoatUtils.setWaterElevation(true);
                 return;
