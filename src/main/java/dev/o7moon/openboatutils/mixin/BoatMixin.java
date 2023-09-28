@@ -166,4 +166,11 @@ public abstract class BoatMixin {
         if (!OpenBoatUtils.enabled || !OpenBoatUtils.underwaterControl) velocityDecay = orig;
         else velocityDecay = OpenBoatUtils.getBlockSlipperiness("minecraft:water");
     }
+
+    // IN_WATER velocity decay
+    @Redirect(method="updateVelocity", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;velocityDecay:F", opcode = Opcodes.PUTFIELD, ordinal = 1))
+    private void velocityDecayHook3(BoatEntity boat, float orig) {
+        if (!OpenBoatUtils.enabled || !OpenBoatUtils.surfaceWaterControl) velocityDecay = orig;
+        else velocityDecay = OpenBoatUtils.getBlockSlipperiness("minecraft:water");
+    }
 }
