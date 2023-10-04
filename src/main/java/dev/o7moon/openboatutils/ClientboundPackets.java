@@ -23,7 +23,8 @@ public enum ClientboundPackets {
     RESEND_VERSION,
     SET_UNDERWATER_CONTROL,
     SET_SURFACE_WATER_CONTROL,
-    SET_EXCLUSIVE_MODE;
+    SET_EXCLUSIVE_MODE,
+    SET_COYOTE_TIME;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -106,6 +107,10 @@ public enum ClientboundPackets {
                         mode = buf.readShort();
                         OpenBoatUtils.resetSettings();
                         Modes.setMode(Modes.values()[mode]);
+                        return;
+                    case 19:
+                        int time = buf.readInt();
+                        OpenBoatUtils.setCoyoteTime(time);
                         return;
                 }
             } catch (Exception E) {

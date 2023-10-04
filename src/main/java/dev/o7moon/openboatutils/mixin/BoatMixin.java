@@ -47,6 +47,7 @@ public abstract class BoatMixin {
         instance.setStepHeight(0f);
 
         BoatEntity.Location loc = this.checkLocation();
+        BoatEntity.Location original_loc = loc;
         if (!OpenBoatUtils.enabled) return loc;
         MinecraftClient minecraft = MinecraftClient.getInstance();
         if (minecraft == null) return loc;
@@ -74,19 +75,26 @@ public abstract class BoatMixin {
         if (this.checkBoatInWater()) {
             if (OpenBoatUtils.waterElevation) {
                 Vec3d velocity = instance.getVelocity();
-                instance.setVelocity(velocity.x, 0.0,velocity.z);
+                instance.setVelocity(velocity.x, 0.0, velocity.z);
             }
             return BoatEntity.Location.IN_WATER;
         }
 
-        if (loc == BoatEntity.Location.IN_AIR && OpenBoatUtils.airControl) {
+        if (original_loc == BoatEntity.Location.IN_AIR && OpenBoatUtils.airControl) {
             this.nearbySlipperiness = OpenBoatUtils.getBlockSlipperiness("minecraft:air");
-            return BoatEntity.Location.ON_LAND;
+            loc = BoatEntity.Location.ON_LAND;
         }
 
-        if (loc == BoatEntity.Location.ON_LAND && OpenBoatUtils.jumpForce > 0f && minecraft.options.jumpKey.isPressed()) {
+        if (original_loc == BoatEntity.Location.ON_LAND) {
+            OpenBoatUtils.coyoteTimer = OpenBoatUtils.coyoteTime*2;// *2 as a hacky solution to the fact this is called twice per tick
+        } else {
+            OpenBoatUtils.coyoteTimer--;
+        }
+
+        if (OpenBoatUtils.coyoteTimer >= 0 && OpenBoatUtils.jumpForce > 0f && minecraft.options.jumpKey.isPressed()) {
             Vec3d velocity = boat.getVelocity();
             boat.setVelocity(velocity.x, OpenBoatUtils.jumpForce, velocity.z);
+            OpenBoatUtils.coyoteTimer = -1;// cant jump again until grounded
         }
 
         return loc;
