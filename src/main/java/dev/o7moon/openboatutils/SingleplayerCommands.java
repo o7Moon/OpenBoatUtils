@@ -1,9 +1,6 @@
 package dev.o7moon.openboatutils;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.*;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -268,6 +265,19 @@ public class SingleplayerCommands {
                         PacketByteBuf packet = PacketByteBufs.create();
                         packet.writeShort(ClientboundPackets.SET_EXCLUSIVE_MODE.ordinal());
                         packet.writeShort(mode.ordinal());
+                        ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                        return 1;
+                    }))
+            );
+
+            dispatcher.register(
+                    literal("coyotetime").then(argument("ticks", IntegerArgumentType.integer()).executes(ctx->{
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        int time = IntegerArgumentType.getInteger(ctx,"ticks");
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.SET_COYOTE_TIME.ordinal());
+                        packet.writeInt(time);
                         ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
                         return 1;
                     }))
