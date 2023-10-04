@@ -3,11 +3,12 @@ package dev.o7moon.openboatutils;
 public enum Modes {
     RALLY,
     RALLY_BLUE,
-    BA,
+    BA_NOFD,
     PARKOUR,
-    BA_BLUE,
+    BA_BLUE_NOFD,
     PARKOUR_BLUE,
-    LEGACY_BA;
+    BA,
+    BA_BLUE;
 
     public static void setMode(Modes mode) {
         switch (mode){
@@ -23,7 +24,7 @@ public enum Modes {
                 OpenBoatUtils.setAirControl(true);
                 OpenBoatUtils.setStepSize(1.25f);
                 return;
-            case BA:
+            case BA_NOFD:
                 OpenBoatUtils.setFallDamage(false);
                 OpenBoatUtils.setAirControl(true);
                 OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.98f);
@@ -37,7 +38,7 @@ public enum Modes {
                 OpenBoatUtils.setJumpForce(0.36f);
                 OpenBoatUtils.setStepSize(0.5f);
                 return;
-            case BA_BLUE:
+            case BA_BLUE_NOFD:
                 OpenBoatUtils.setFallDamage(false);
                 OpenBoatUtils.setAirControl(true);
                 OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.989f);
@@ -51,9 +52,15 @@ public enum Modes {
                 OpenBoatUtils.setJumpForce(0.36f);
                 OpenBoatUtils.setStepSize(0.5f);
                 return;
-            case LEGACY_BA:
+            case BA:
                 OpenBoatUtils.setAirControl(true);
                 OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.98f);
+                OpenBoatUtils.setStepSize(1.25f);
+                OpenBoatUtils.setWaterElevation(true);
+                return;
+            case BA_BLUE:
+                OpenBoatUtils.setAirControl(true);
+                OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.989f);
                 OpenBoatUtils.setStepSize(1.25f);
                 OpenBoatUtils.setWaterElevation(true);
                 return;
