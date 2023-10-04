@@ -62,6 +62,7 @@ public class OpenBoatUtils implements ModInitializer {
     public static boolean surfaceWaterControl = false;
     public static int coyoteTime = 0;
     public static int coyoteTimer = 0;// timer decrements per tick, is reset to time when grounded
+    public static boolean waterJumping = false;
 
     public static HashMap<String, Float> slipperinessMap = new HashMap<>(){{
         put("minecraft:slime",0.8f);
@@ -88,6 +89,8 @@ public class OpenBoatUtils implements ModInitializer {
         allowAccelStacking = false;
         underwaterControl = false;
         surfaceWaterControl = false;
+        coyoteTime = 0;
+        waterJumping = false;
         slipperinessMap = new HashMap<>(){{
             put("minecraft:slime",0.8f);
             put("minecraft:ice",0.98f);
@@ -197,5 +200,10 @@ public class OpenBoatUtils implements ModInitializer {
     public static void setCoyoteTime(int t) {
         enabled = true;
         coyoteTime = t;
+    }
+
+    public static void setWaterJumping(boolean value) {
+        enabled = true;
+        waterJumping = value;
     }
 }

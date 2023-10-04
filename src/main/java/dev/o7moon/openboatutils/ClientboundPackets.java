@@ -24,7 +24,8 @@ public enum ClientboundPackets {
     SET_UNDERWATER_CONTROL,
     SET_SURFACE_WATER_CONTROL,
     SET_EXCLUSIVE_MODE,
-    SET_COYOTE_TIME;
+    SET_COYOTE_TIME,
+    SET_WATER_JUMPING;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -111,6 +112,10 @@ public enum ClientboundPackets {
                     case 19:
                         int time = buf.readInt();
                         OpenBoatUtils.setCoyoteTime(time);
+                        return;
+                    case 20:
+                        enabled = buf.readBoolean();
+                        OpenBoatUtils.setWaterJumping(enabled);
                         return;
                 }
             } catch (Exception E) {

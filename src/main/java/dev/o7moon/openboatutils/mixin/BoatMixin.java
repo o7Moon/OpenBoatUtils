@@ -77,7 +77,7 @@ public abstract class BoatMixin {
                 Vec3d velocity = instance.getVelocity();
                 instance.setVelocity(velocity.x, 0.0, velocity.z);
             }
-            return BoatEntity.Location.IN_WATER;
+            loc = BoatEntity.Location.IN_WATER;
         }
 
         if (original_loc == BoatEntity.Location.IN_AIR && OpenBoatUtils.airControl) {
@@ -85,7 +85,7 @@ public abstract class BoatMixin {
             loc = BoatEntity.Location.ON_LAND;
         }
 
-        if (original_loc == BoatEntity.Location.ON_LAND) {
+        if (original_loc == BoatEntity.Location.ON_LAND || (OpenBoatUtils.waterJumping && loc == BoatEntity.Location.IN_WATER)) {
             OpenBoatUtils.coyoteTimer = OpenBoatUtils.coyoteTime*2;// *2 as a hacky solution to the fact this is called twice per tick
         } else {
             OpenBoatUtils.coyoteTimer--;
