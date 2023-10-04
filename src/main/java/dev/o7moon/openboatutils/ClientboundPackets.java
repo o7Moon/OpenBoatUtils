@@ -22,7 +22,8 @@ public enum ClientboundPackets {
     ALLOW_ACCEL_STACKING,
     RESEND_VERSION,
     SET_UNDERWATER_CONTROL,
-    SET_SURFACE_WATER_CONTROL;
+    SET_SURFACE_WATER_CONTROL,
+    SET_EXCLUSIVE_MODE;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -100,6 +101,11 @@ public enum ClientboundPackets {
                     case 17:
                         enabled = buf.readBoolean();
                         OpenBoatUtils.setSurfaceWaterControl(enabled);
+                        return;
+                    case 18:
+                        mode = buf.readShort();
+                        OpenBoatUtils.resetSettings();
+                        Modes.setMode(Modes.values()[mode]);
                         return;
                 }
             } catch (Exception E) {

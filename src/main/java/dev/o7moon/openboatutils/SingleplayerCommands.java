@@ -139,7 +139,6 @@ public class SingleplayerCommands {
                         ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
                         return 1;
                     }))
-
             );
 
             dispatcher.register(
@@ -246,6 +245,29 @@ public class SingleplayerCommands {
                         PacketByteBuf packet = PacketByteBufs.create();
                         packet.writeShort(ClientboundPackets.SET_SURFACE_WATER_CONTROL.ordinal());
                         packet.writeBoolean(BoolArgumentType.getBool(ctx, "enabled"));
+                        ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                        return 1;
+                    }))
+            );
+
+            dispatcher.register(
+                    literal("exclusiveboatmode").then(argument("mode",StringArgumentType.string()).executes(ctx->{
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        Modes mode;
+                        try {
+                            mode = Modes.valueOf(StringArgumentType.getString(ctx, "mode"));
+                        } catch (Exception e) {
+                            String valid_modes = "";
+                            for (Modes m : Modes.values()) {
+                                valid_modes += m.toString() + " ";
+                            }
+                            ctx.getSource().sendMessage(Text.literal("Invalid mode! Valid modes are: "+valid_modes));
+                            return 0;
+                        }
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.SET_EXCLUSIVE_MODE.ordinal());
+                        packet.writeShort(mode.ordinal());
                         ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
                         return 1;
                     }))
