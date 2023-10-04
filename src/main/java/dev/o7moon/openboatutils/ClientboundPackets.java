@@ -25,7 +25,8 @@ public enum ClientboundPackets {
     SET_SURFACE_WATER_CONTROL,
     SET_EXCLUSIVE_MODE,
     SET_COYOTE_TIME,
-    SET_WATER_JUMPING;
+    SET_WATER_JUMPING,
+    SET_SWIM_FORCE;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -116,6 +117,10 @@ public enum ClientboundPackets {
                     case 20:
                         enabled = buf.readBoolean();
                         OpenBoatUtils.setWaterJumping(enabled);
+                        return;
+                    case 21:
+                        float force = buf.readFloat();
+                        OpenBoatUtils.setSwimForce(force);
                         return;
                 }
             } catch (Exception E) {
