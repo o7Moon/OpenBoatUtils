@@ -294,6 +294,19 @@ public class SingleplayerCommands {
                         return 1;
                     }))
             );
+
+            dispatcher.register(
+                    literal("swimforce").then(argument("force", FloatArgumentType.floatArg()).executes(ctx -> {
+                                ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                if (player == null) return 0;
+                                PacketByteBuf packet = PacketByteBufs.create();
+                                packet.writeShort(ClientboundPackets.SET_SWIM_FORCE.ordinal());
+                                packet.writeFloat(FloatArgumentType.getFloat(ctx, "force"));
+                                ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                                return 1;
+                            })
+                    )
+            );
         });
     }
 }

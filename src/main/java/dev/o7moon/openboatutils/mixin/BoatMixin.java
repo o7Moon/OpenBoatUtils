@@ -42,8 +42,35 @@ public abstract class BoatMixin {
     boolean pressingForward;
     @Shadow
     boolean pressingBack;
-    @Redirect(method = {"tick","getPaddleSoundEvent"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;checkLocation()Lnet/minecraft/entity/vehicle/BoatEntity$Location;"))
-    BoatEntity.Location hookCheckLocation(BoatEntity instance) {
+
+    void oncePerTick(BoatEntity instance, BoatEntity.Location loc, MinecraftClient minecraft) {
+        if ((loc ==  BoatEntity.Location.UNDER_FLOWING_WATER || loc == BoatEntity.Location.UNDER_WATER) && minecraft.options.jumpKey.isPressed() && OpenBoatUtils.swimForce != 0.0f) {
+            Vec3d velocity = instance.getVelocity();
+            instance.setVelocity(velocity.x, velocity.y + OpenBoatUtils.swimForce, velocity.z);
+        }
+
+        if (loc == BoatEntity.Location.ON_LAND || (OpenBoatUtils.waterJumping && loc == BoatEntity.Location.IN_WATER)) {
+            OpenBoatUtils.coyoteTimer = OpenBoatUtils.coyoteTime;
+        } else {
+            OpenBoatUtils.coyoteTimer--;
+        }
+
+        if (OpenBoatUtils.coyoteTimer >= 0 && OpenBoatUtils.jumpForce > 0f && minecraft.options.jumpKey.isPressed()) {
+            Vec3d velocity = instance.getVelocity();
+            instance.setVelocity(velocity.x, OpenBoatUtils.jumpForce, velocity.z);
+            OpenBoatUtils.coyoteTimer = -1;// cant jump again until grounded
+        }
+    }
+    @Redirect(method = {"getPaddleSoundEvent"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;checkLocation()Lnet/minecraft/entity/vehicle/BoatEntity$Location;"))
+    BoatEntity.Location paddleHook(BoatEntity instance) {
+        return hookCheckLocation(instance, false);
+    }
+    @Redirect(method = {"tick"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;checkLocation()Lnet/minecraft/entity/vehicle/BoatEntity$Location;"))
+    BoatEntity.Location tickHook(BoatEntity instance) {
+        return hookCheckLocation(instance, true);
+    }
+
+    BoatEntity.Location hookCheckLocation(BoatEntity instance, boolean is_tick) {
         instance.setStepHeight(0f);
 
         BoatEntity.Location loc = this.checkLocation();
@@ -58,6 +85,7 @@ public abstract class BoatMixin {
         BoatEntity boat = (BoatEntity)vehicle;
 
         if (!boat.equals(instance)) return loc;
+        if (is_tick) oncePerTick(instance, loc, minecraft);
 
         instance.setStepHeight(OpenBoatUtils.getStepSize());
 
@@ -83,18 +111,6 @@ public abstract class BoatMixin {
         if (original_loc == BoatEntity.Location.IN_AIR && OpenBoatUtils.airControl) {
             this.nearbySlipperiness = OpenBoatUtils.getBlockSlipperiness("minecraft:air");
             loc = BoatEntity.Location.ON_LAND;
-        }
-
-        if (original_loc == BoatEntity.Location.ON_LAND || (OpenBoatUtils.waterJumping && loc == BoatEntity.Location.IN_WATER)) {
-            OpenBoatUtils.coyoteTimer = OpenBoatUtils.coyoteTime*2;// *2 as a hacky solution to the fact this is called twice per tick
-        } else {
-            OpenBoatUtils.coyoteTimer--;
-        }
-
-        if (OpenBoatUtils.coyoteTimer >= 0 && OpenBoatUtils.jumpForce > 0f && minecraft.options.jumpKey.isPressed()) {
-            Vec3d velocity = boat.getVelocity();
-            boat.setVelocity(velocity.x, OpenBoatUtils.jumpForce, velocity.z);
-            OpenBoatUtils.coyoteTimer = -1;// cant jump again until grounded
         }
 
         return loc;
