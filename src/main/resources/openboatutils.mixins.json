@@ -10,6 +10,9 @@
     "BoatMixin",
     "ClientWorldMixin"
   ],
+  "server": [
+    "ServerPlayNetworkHandlerMixin2"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
