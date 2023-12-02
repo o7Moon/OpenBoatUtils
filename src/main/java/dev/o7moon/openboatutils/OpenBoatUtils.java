@@ -25,17 +25,7 @@ public class OpenBoatUtils implements ModInitializer {
     public void onInitialize() {
         ServerboundPackets.registerHandlers();
 
-        ClientboundPackets.registerHandlers();
-
         SingleplayerCommands.registerCommands();
-
-        ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-            resetSettings();
-        });
-
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            sendVersionPacket();
-        });
     }
 
     public static final Logger LOG = LoggerFactory.getLogger("OpenBoatUtils");
