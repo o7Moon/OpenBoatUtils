@@ -202,4 +202,10 @@ public class OpenBoatUtils implements ModInitializer {
         enabled = true;
         swimForce = value;
     }
+    public static void breakSlimePlease() {
+        enabled = true;
+        if (slipperinessMap.containsKey("minecraft:slime_block")) {
+            slipperinessMap.remove("minecraft:slime_block");
+        }
+    }
 }
