@@ -15,9 +15,4 @@ public class ServerPlayNetworkHandlerMixin {
     private static void isMovementInvalid(CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(false);// !!! this disables the movement anti-cheat, but is necessary for stepping to work!
     }
-
-    @ModifyVariable(method = "onVehicleMove", at = @At("STORE"), name = {"bl3","bl4"})
-    private boolean movedWronglyHook(boolean bl3){
-        return false;
-    }
 }
