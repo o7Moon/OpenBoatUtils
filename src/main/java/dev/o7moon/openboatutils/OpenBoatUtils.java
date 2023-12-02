@@ -66,7 +66,7 @@ public class OpenBoatUtils implements ModInitializer {
     public static float swimForce = 0.0f;
 
     public static HashMap<String, Float> slipperinessMap = new HashMap<>(){{
-        put("minecraft:slime",0.8f);
+        put("minecraft:slime_block",0.8f);
         put("minecraft:ice",0.98f);
         put("minecraft:packed_ice",0.98f);
         put("minecraft:blue_ice",0.989f);
