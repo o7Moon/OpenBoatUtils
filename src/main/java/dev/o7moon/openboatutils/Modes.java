@@ -1,22 +1,22 @@
 package dev.o7moon.openboatutils;
 
 public enum Modes {
-    BROKEN_SLIME_RALLY,
-    BROKEN_SLIME_RALLY_BLUE,
-    BROKEN_SLIME_BA_NOFD,
-    BROKEN_SLIME_PARKOUR,
-    BROKEN_SLIME_BA_BLUE_NOFD,
-    BROKEN_SLIME_PARKOUR_BLUE,
-    BROKEN_SLIME_BA,
-    BROKEN_SLIME_BA_BLUE,
-    RALLY,
-    RALLY_BLUE,
-    BA_NOFD,
-    PARKOUR,
-    BA_BLUE_NOFD,
-    PARKOUR_BLUE,
-    BA,
-    BA_BLUE;
+    BROKEN_SLIME_RALLY,//0
+    BROKEN_SLIME_RALLY_BLUE,//1
+    BROKEN_SLIME_BA_NOFD,//2
+    BROKEN_SLIME_PARKOUR,//3
+    BROKEN_SLIME_BA_BLUE_NOFD,//4
+    BROKEN_SLIME_PARKOUR_BLUE,//5
+    BROKEN_SLIME_BA,//6
+    BROKEN_SLIME_BA_BLUE,//7
+    RALLY,//8
+    RALLY_BLUE,//9
+    BA_NOFD,//10
+    PARKOUR,//11
+    BA_BLUE_NOFD,//12
+    PARKOUR_BLUE,//13
+    BA,//14
+    BA_BLUE;//15
 
     public static void setMode(Modes mode) {
         switch (mode){

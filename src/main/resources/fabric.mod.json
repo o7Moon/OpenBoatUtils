@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "openboatutils",
-  "version": "0.3",
+  "version": "0.4",
   "name": "OpenBoatUtils",
   "description": "Configurable boat physics, from the serverside. Check the wiki (website button) for more information.",
   "authors": [
@@ -28,6 +28,6 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "1.20.1"
   }
 }
