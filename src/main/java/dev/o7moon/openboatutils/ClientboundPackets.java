@@ -26,7 +26,9 @@ public enum ClientboundPackets {
     SET_EXCLUSIVE_MODE,
     SET_COYOTE_TIME,
     SET_WATER_JUMPING,
-    SET_SWIM_FORCE;
+    SET_SWIM_FORCE,
+    REMOVE_BLOCKS_SLIPPERINESS,
+    CLEAR_SLIPPERINESS;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -121,6 +123,14 @@ public enum ClientboundPackets {
                     case 21:
                         float force = buf.readFloat();
                         OpenBoatUtils.setSwimForce(force);
+                        return;
+                    case 22:
+                        blocks = buf.readString();
+                        blocksArray = blocks.split(",");
+                        OpenBoatUtils.removeBlocksSlipperiness(Arrays.asList(blocksArray));
+                        return;
+                    case 23:
+                        OpenBoatUtils.clearSlipperinessMap();
                         return;
                 }
             } catch (Exception E) {

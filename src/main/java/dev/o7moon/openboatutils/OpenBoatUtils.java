@@ -232,4 +232,20 @@ public class OpenBoatUtils implements ModInitializer {
             getSlipperinessMap().remove("minecraft:slime_block");
         }
     }
+    public static void removeBlockSlipperiness(String block) {
+        enabled = true;
+        if (getSlipperinessMap().containsKey(block)) {
+            getSlipperinessMap().remove(block);
+        }
+    }
+    public static void removeBlocksSlipperiness(List<String> blocks) {
+        enabled = true;
+        for (String block : blocks) {
+            removeBlockSlipperiness(block);
+        }
+    }
+    public static void clearSlipperinessMap() {
+        enabled = true;
+        slipperinessMap = new HashMap<>();
+    }
 }
