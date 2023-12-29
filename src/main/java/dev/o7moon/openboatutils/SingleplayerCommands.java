@@ -307,6 +307,29 @@ public class SingleplayerCommands {
                             })
                     )
             );
+
+            dispatcher.register(
+                    literal("removeblockslipperiness").then(argument("blocks", StringArgumentType.greedyString()).executes(ctx->{
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.REMOVE_BLOCKS_SLIPPERINESS.ordinal());
+                        packet.writeString(StringArgumentType.getString(ctx,"blocks").trim());
+                        ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                        return 1;
+                    }))
+            );
+
+            dispatcher.register(
+                    literal("clearslipperiness").executes(ctx->{
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.CLEAR_SLIPPERINESS.ordinal());
+                        ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                        return 1;
+                    })
+            );
         });
     }
 }
