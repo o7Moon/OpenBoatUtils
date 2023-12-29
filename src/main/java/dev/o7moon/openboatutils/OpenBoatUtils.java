@@ -9,7 +9,10 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.Block;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -55,14 +58,34 @@ public class OpenBoatUtils implements ModInitializer {
     public static boolean waterJumping = false;
     public static float swimForce = 0.0f;
 
-    public static HashMap<String, Float> slipperinessMap = new HashMap<>(){{
+    public static HashMap<String, Float> vanillaSlipperinessMap;
+
+    public static HashMap<String, Float> slipperinessMap;/* = new HashMap<>(){{
         put("minecraft:slime_block",0.8f);
         put("minecraft:ice",0.98f);
         put("minecraft:packed_ice",0.98f);
         put("minecraft:blue_ice",0.989f);
         put("minecraft:frosted_ice",0.98f);
-    }};
+    }};*/
 
+    public static HashMap<String, Float> getVanillaSlipperinessMap() {
+        if (vanillaSlipperinessMap == null) {
+            vanillaSlipperinessMap = new HashMap<>();
+            for (Block b : Registries.BLOCK.stream().toList()) {
+                if (b.getSlipperiness() != 0.6){
+                    vanillaSlipperinessMap.put(Registries.BLOCK.getId(b).toString(), b.getSlipperiness());
+                }
+            }
+        }
+        return vanillaSlipperinessMap;
+    }
+
+    public static HashMap<String, Float> getSlipperinessMap() {
+        if (slipperinessMap == null) {
+            slipperinessMap = new HashMap<>(getVanillaSlipperinessMap());
+        }
+        return slipperinessMap;
+    }
 
     public static void resetSettings(){
         enabled = false;
@@ -83,13 +106,14 @@ public class OpenBoatUtils implements ModInitializer {
         coyoteTime = 0;
         waterJumping = false;
         swimForce = 0.0f;
-        slipperinessMap = new HashMap<>(){{
+        slipperinessMap = new HashMap<>(getVanillaSlipperinessMap());/*{{
             put("minecraft:slime_block",0.8f);
             put("minecraft:ice",0.98f);
             put("minecraft:packed_ice",0.98f);
             put("minecraft:blue_ice",0.989f);
             put("minecraft:frosted_ice",0.98f);
-        }};
+        }};*/
+
     }
 
     public static void setStepSize(float stepsize){
@@ -110,11 +134,11 @@ public class OpenBoatUtils implements ModInitializer {
     }
 
     static void setBlockSlipperiness(String block, float slipperiness){
-        slipperinessMap.put(block, slipperiness);
+        getSlipperinessMap().put(block, slipperiness);
     }
 
     public static float getBlockSlipperiness(String block){
-        if (slipperinessMap.containsKey(block)) return slipperinessMap.get(block);
+        if (getSlipperinessMap().containsKey(block)) return getSlipperinessMap().get(block);
         return defaultSlipperiness;
     }
 
@@ -204,8 +228,8 @@ public class OpenBoatUtils implements ModInitializer {
     }
     public static void breakSlimePlease() {
         enabled = true;
-        if (slipperinessMap.containsKey("minecraft:slime_block")) {
-            slipperinessMap.remove("minecraft:slime_block");
+        if (getSlipperinessMap().containsKey("minecraft:slime_block")) {
+            getSlipperinessMap().remove("minecraft:slime_block");
         }
     }
 }
