@@ -28,7 +28,9 @@ public enum ClientboundPackets {
     SET_WATER_JUMPING,
     SET_SWIM_FORCE,
     REMOVE_BLOCKS_SLIPPERINESS,
-    CLEAR_SLIPPERINESS;
+    CLEAR_SLIPPERINESS,
+    MODE_SERIES,
+    EXCLUSIVE_MODE_SERIES;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -131,6 +133,21 @@ public enum ClientboundPackets {
                         return;
                     case 23:
                         OpenBoatUtils.clearSlipperinessMap();
+                        return;
+                    case 24:
+                        short amount = buf.readShort();
+                        for (int i = 0; i < amount; i++) {
+                            mode = buf.readShort();
+                            Modes.setMode(Modes.values()[mode]);
+                        }
+                        return;
+                    case 25:
+                        OpenBoatUtils.resetSettings();
+                        amount = buf.readShort();
+                        for (int i = 0; i < amount; i++) {
+                            mode = buf.readShort();
+                            Modes.setMode(Modes.values()[mode]);
+                        }
                         return;
                 }
             } catch (Exception E) {
