@@ -72,7 +72,7 @@ public class OpenBoatUtils implements ModInitializer {
         if (vanillaSlipperinessMap == null) {
             vanillaSlipperinessMap = new HashMap<>();
             for (Block b : Registries.BLOCK.stream().toList()) {
-                if (b.getSlipperiness() != 0.6){
+                if (b.getSlipperiness() != 0.6f){
                     vanillaSlipperinessMap.put(Registries.BLOCK.getId(b).toString(), b.getSlipperiness());
                 }
             }

@@ -330,6 +330,60 @@ public class SingleplayerCommands {
                         return 1;
                     })
             );
+
+            dispatcher.register(
+                    literal("modeseries").then(argument("modes", StringArgumentType.greedyString()).executes(ctx-> {
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        Modes mode;
+                        String[] strs = StringArgumentType.getString(ctx, "modes").split(",");
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.MODE_SERIES.ordinal());
+                        packet.writeShort(strs.length);
+                        for (String modeStr : strs) {
+                            try {
+                                mode = Modes.valueOf(modeStr.trim());
+                            } catch (Exception e) {
+                                String valid_modes = "";
+                                for (Modes m : Modes.values()) {
+                                    valid_modes += m.toString() + " ";
+                                }
+                                ctx.getSource().sendMessage(Text.literal("Invalid mode! Valid modes are: "+valid_modes));
+                                return 0;
+                            }
+                            packet.writeShort(mode.ordinal());
+                        }
+                        ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                        return 1;
+                    }))
+            );
+
+            dispatcher.register(
+                    literal("exclusivemodeseries").then(argument("modes", StringArgumentType.greedyString()).executes(ctx-> {
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        Modes mode;
+                        String[] strs = StringArgumentType.getString(ctx, "modes").split(",");
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.EXCLUSIVE_MODE_SERIES.ordinal());
+                        packet.writeShort(strs.length);
+                        for (String modeStr : strs) {
+                            try {
+                                mode = Modes.valueOf(modeStr.trim());
+                            } catch (Exception e) {
+                                String valid_modes = "";
+                                for (Modes m : Modes.values()) {
+                                    valid_modes += m.toString() + " ";
+                                }
+                                ctx.getSource().sendMessage(Text.literal("Invalid mode! Valid modes are: "+valid_modes));
+                                return 0;
+                            }
+                            packet.writeShort(mode.ordinal());
+                        }
+                        ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                        return 1;
+                    }))
+            );
         });
     }
 }
