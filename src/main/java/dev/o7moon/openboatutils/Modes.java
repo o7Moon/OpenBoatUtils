@@ -1,5 +1,7 @@
 package dev.o7moon.openboatutils;
 
+import java.util.ArrayList;
+
 public enum Modes {
     BROKEN_SLIME_RALLY,//0
     BROKEN_SLIME_RALLY_BLUE,//1
@@ -16,7 +18,12 @@ public enum Modes {
     BA_BLUE_NOFD,//12
     PARKOUR_BLUE,//13
     BA,//14
-    BA_BLUE;//15
+    BA_BLUE,//15
+    JUMP_BLOCKS,//16
+    BOOSTER_BLOCKS,//17
+    DEFAULT_ICE,//18
+    DEFAULT_BLUE_ICE,//19
+    ;
 
     public static void setMode(Modes mode) {
         switch (mode){
@@ -131,6 +138,22 @@ public enum Modes {
                 OpenBoatUtils.setStepSize(1.25f);
                 OpenBoatUtils.setWaterElevation(true);
                 OpenBoatUtils.breakSlimePlease();
+                return;
+            case JUMP_BLOCKS:
+                OpenBoatUtils.setBlockSetting(OpenBoatUtils.PerBlockSettingType.jumpForce, "minecraft:orange_concrete", 0.36f);// ~1 block
+                OpenBoatUtils.setBlockSetting(OpenBoatUtils.PerBlockSettingType.jumpForce, "minecraft:black_concrete", 0.0f);// no jump
+                OpenBoatUtils.setBlockSetting(OpenBoatUtils.PerBlockSettingType.jumpForce, "minecraft:green_concrete", 0.5f);// ~2-3 block
+                OpenBoatUtils.setBlockSetting(OpenBoatUtils.PerBlockSettingType.jumpForce, "minecraft:yellow_concrete", 0.18f);// ~0.5 blocks
+                return;
+            case BOOSTER_BLOCKS:
+                OpenBoatUtils.setBlockSetting(OpenBoatUtils.PerBlockSettingType.forwardsAccel, "minecraft:magenta_glazed_terracotta", 0.08f);// double accel
+                OpenBoatUtils.setBlockSetting(OpenBoatUtils.PerBlockSettingType.yawAccel, "minecraft:light_gray_glazed_terracotta", 0.08f);// double yaw accel
+                return;
+            case DEFAULT_ICE:
+                OpenBoatUtils.setAllBlocksSlipperiness(0.98f);
+                return;
+            case DEFAULT_BLUE_ICE:
+                OpenBoatUtils.setAllBlocksSlipperiness(0.985f);
                 return;
         }
     }

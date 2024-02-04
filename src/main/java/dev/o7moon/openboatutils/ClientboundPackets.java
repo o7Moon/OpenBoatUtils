@@ -30,7 +30,8 @@ public enum ClientboundPackets {
     REMOVE_BLOCKS_SLIPPERINESS,
     CLEAR_SLIPPERINESS,
     MODE_SERIES,
-    EXCLUSIVE_MODE_SERIES;
+    EXCLUSIVE_MODE_SERIES,
+    SET_PER_BLOCK;
 
     public static void registerHandlers(){
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -148,6 +149,13 @@ public enum ClientboundPackets {
                             mode = buf.readShort();
                             Modes.setMode(Modes.values()[mode]);
                         }
+                        return;
+                    case 26:
+                        short setting = buf.readShort();
+                        float value = buf.readFloat();
+                        blocks = buf.readString();
+                        blocksArray = blocks.split(",");
+                        OpenBoatUtils.setBlocksSetting(OpenBoatUtils.PerBlockSettingType.values()[setting], Arrays.asList(blocksArray), value);
                         return;
                 }
             } catch (Exception E) {
