@@ -55,9 +55,11 @@ public abstract class BoatMixin {
             OpenBoatUtils.coyoteTimer--;
         }
 
-        if (OpenBoatUtils.coyoteTimer >= 0 && OpenBoatUtils.jumpForce > 0f && minecraft.options.jumpKey.isPressed()) {
+        float jumpForce = OpenBoatUtils.GetJumpForce((BoatEntity)(Object)this);
+
+        if (OpenBoatUtils.coyoteTimer >= 0 && jumpForce > 0f && minecraft.options.jumpKey.isPressed()) {
             Vec3d velocity = instance.getVelocity();
-            instance.setVelocity(velocity.x, OpenBoatUtils.jumpForce, velocity.z);
+            instance.setVelocity(velocity.x, jumpForce, velocity.z);
             OpenBoatUtils.coyoteTimer = -1;// cant jump again until grounded
         }
     }
@@ -143,26 +145,26 @@ public abstract class BoatMixin {
         float original_delta = yawVelocity - this.yawVelocity;
         // sign isn't needed here because the vanilla acceleration is exactly 1,
         // but I suppose this helps if mojang ever decides to change that value for some reason
-        this.yawVelocity += MathHelper.sign(original_delta) * OpenBoatUtils.yawAcceleration;
+        this.yawVelocity += MathHelper.sign(original_delta) * OpenBoatUtils.GetYawAccel((BoatEntity)(Object)this);
     }
 
     // a whole lotta modifyconstants because mojang put the acceleration values in literals
     @ModifyConstant(method = "updatePaddles", constant = @Constant(floatValue = 0.04f, ordinal = 0))
     private float forwardsAccel(float original) {
         if (!OpenBoatUtils.enabled) return original;
-        return OpenBoatUtils.forwardsAcceleration;
+        return OpenBoatUtils.GetForwardAccel((BoatEntity)(Object)this);
     }
 
     @ModifyConstant(method = "updatePaddles", constant = @Constant(floatValue = 0.005f, ordinal = 0))
     private float turnAccel(float original) {
         if (!OpenBoatUtils.enabled) return original;
-        return OpenBoatUtils.turningForwardsAcceleration;
+        return OpenBoatUtils.GetTurnForwardAccel((BoatEntity)(Object)this);
     }
 
     @ModifyConstant(method = "updatePaddles", constant = @Constant(floatValue = 0.005f, ordinal = 1))
     private float backwardsAccel(float original) {
         if (!OpenBoatUtils.enabled) return original;
-        return OpenBoatUtils.backwardsAcceleration;
+        return OpenBoatUtils.GetBackwardAccel((BoatEntity)(Object)this);
     }
 
     @Redirect(method = "updatePaddles", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;pressingForward:Z", opcode = Opcodes.GETFIELD, ordinal = 0))

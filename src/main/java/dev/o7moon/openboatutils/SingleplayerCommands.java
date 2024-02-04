@@ -384,6 +384,33 @@ public class SingleplayerCommands {
                         return 1;
                     }))
             );
+
+            dispatcher.register(
+                    literal("setblocksetting").then(argument("setting", StringArgumentType.string()).then(argument("value", FloatArgumentType.floatArg()).then(argument("blocks", StringArgumentType.greedyString()).executes(ctx -> {
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        OpenBoatUtils.PerBlockSettingType setting;
+                        try {
+                            setting = OpenBoatUtils.PerBlockSettingType.valueOf(StringArgumentType.getString(ctx, "setting"));
+                        } catch (Exception e) {
+                            String valid_settings = "";
+                            for (OpenBoatUtils.PerBlockSettingType s : OpenBoatUtils.PerBlockSettingType.values()) {
+                                valid_settings += s.toString() + " ";
+                            }
+                            ctx.getSource().sendMessage(Text.literal("Invalid setting! Valid settings are: "+valid_settings));
+                            return 0;
+                        }
+                        float value = FloatArgumentType.getFloat(ctx, "value");
+                        String blocks = StringArgumentType.getString(ctx, "blocks");
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.SET_PER_BLOCK.ordinal());
+                        packet.writeShort(setting.ordinal());
+                        packet.writeFloat(value);
+                        packet.writeString(blocks);
+                        ServerPlayNetworking.send(player, OpenBoatUtils.settingsChannel, packet);
+                        return 1;
+                    }))))
+            );
         });
     }
 }

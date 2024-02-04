@@ -10,15 +10,26 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.LilyPadBlock;
+import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.function.BooleanBiFunction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static net.minecraft.server.command.CommandManager.*;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +79,16 @@ public class OpenBoatUtils implements ModInitializer {
         put("minecraft:frosted_ice",0.98f);
     }};*/
 
+    enum PerBlockSettingType {
+        jumpForce,
+        forwardsAccel,
+        backwardsAccel,
+        yawAccel,
+        turnForwardsAccel,
+    }
+
+    public static HashMap<Integer, HashMap<String, Float>> perBlockSettings;
+
     public static HashMap<String, Float> getVanillaSlipperinessMap() {
         if (vanillaSlipperinessMap == null) {
             vanillaSlipperinessMap = new HashMap<>();
@@ -78,6 +99,56 @@ public class OpenBoatUtils implements ModInitializer {
             }
         }
         return vanillaSlipperinessMap;
+    }
+
+    public static boolean settingHasPerBlock(PerBlockSettingType setting) {
+        return perBlockSettings != null && perBlockSettings.containsKey(setting.ordinal());
+    }
+
+    public static float getNearbySetting(BoatEntity instance, PerBlockSettingType setting) {
+        Box box = instance.getBoundingBox();
+        Box box2 = new Box(box.minX, box.minY - 0.001, box.minZ, box.maxX, box.minY, box.maxZ);
+        int i = MathHelper.floor(box2.minX) - 1;
+        int j = MathHelper.ceil(box2.maxX) + 1;
+        int k = MathHelper.floor(box2.minY) - 1;
+        int l = MathHelper.ceil(box2.maxY) + 1;
+        int m = MathHelper.floor(box2.minZ) - 1;
+        int n = MathHelper.ceil(box2.maxZ) + 1;
+        VoxelShape voxelShape = VoxelShapes.cuboid(box2);
+        float f = 0.0f;
+        int o = 0;
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        for (int p = i; p < j; ++p) {
+            for (int q = m; q < n; ++q) {
+                int r = (p == i || p == j - 1 ? 1 : 0) + (q == m || q == n - 1 ? 1 : 0);
+                if (r == 2) continue;
+                for (int s = k; s < l; ++s) {
+                    if (r > 0 && (s == k || s == l - 1)) continue;
+                    mutable.set(p, s, q);
+                    BlockState blockState = instance.getWorld().getBlockState(mutable);
+                    if (blockState.getBlock() instanceof LilyPadBlock || !VoxelShapes.matchesAnywhere(blockState.getCollisionShape(instance.getWorld(), mutable).offset(p, s, q), voxelShape, BooleanBiFunction.AND)) continue;
+                    f += getPerBlockForBlock(setting, Registries.BLOCK.getId(blockState.getBlock()).toString());
+                    ++o;
+                }
+            }
+        }
+        if (o == 0) return getPerBlockForBlock(setting, "minecraft:air");
+        return f / (float)o;
+    }
+
+    public static float getPerBlockForBlock(PerBlockSettingType setting, String blockid){
+        return settingHasPerBlock(setting) && perBlockSettings.get(setting.ordinal()).containsKey(blockid) ? perBlockSettings.get(setting.ordinal()).get(blockid): defaultPerBlock(setting);
+    }
+
+    public static float defaultPerBlock(PerBlockSettingType setting) {
+        switch (setting) {
+            case yawAccel -> {return yawAcceleration;}
+            case jumpForce -> {return jumpForce;}
+            case forwardsAccel -> {return forwardsAcceleration;}
+            case backwardsAccel -> {return backwardsAcceleration;}
+            case turnForwardsAccel -> {return turningForwardsAcceleration;}
+        };
+        return 0;// unreachable but java compiler hates me (personally)
     }
 
     public static HashMap<String, Float> getSlipperinessMap() {
@@ -113,7 +184,7 @@ public class OpenBoatUtils implements ModInitializer {
             put("minecraft:blue_ice",0.989f);
             put("minecraft:frosted_ice",0.98f);
         }};*/
-
+        perBlockSettings = new HashMap();
     }
 
     public static void setStepSize(float stepsize){
@@ -247,5 +318,44 @@ public class OpenBoatUtils implements ModInitializer {
     public static void clearSlipperinessMap() {
         enabled = true;
         slipperinessMap = new HashMap<>();
+    }
+
+    public static float GetJumpForce(BoatEntity boat) {
+        if (!settingHasPerBlock(PerBlockSettingType.jumpForce)) return jumpForce;
+        else return getNearbySetting(boat, PerBlockSettingType.jumpForce);
+    }
+
+    public static float GetYawAccel(BoatEntity boat) {
+        if (!settingHasPerBlock(PerBlockSettingType.yawAccel)) return yawAcceleration;
+        else return getNearbySetting(boat, PerBlockSettingType.yawAccel);
+    }
+
+    public static float GetForwardAccel(BoatEntity boat) {
+        if (!settingHasPerBlock(PerBlockSettingType.forwardsAccel)) return forwardsAcceleration;
+        else return getNearbySetting(boat, PerBlockSettingType.forwardsAccel);
+    }
+
+    public static float GetBackwardAccel(BoatEntity boat) {
+        if (!settingHasPerBlock(PerBlockSettingType.backwardsAccel)) return backwardsAcceleration;
+        else return getNearbySetting(boat, PerBlockSettingType.backwardsAccel);
+    }
+
+    public static float GetTurnForwardAccel(BoatEntity boat) {
+        if (!settingHasPerBlock(PerBlockSettingType.turnForwardsAccel)) return turningForwardsAcceleration;
+        else return getNearbySetting(boat, PerBlockSettingType.turnForwardsAccel);
+    }
+
+    public static void setBlocksSetting(PerBlockSettingType setting, List<String> blocks, float value) {
+        enabled = true;
+        if (!settingHasPerBlock(setting)) perBlockSettings.put(setting.ordinal(), new HashMap());
+        HashMap<String, Float> map = perBlockSettings.get(setting.ordinal());
+        for (String block : blocks) {
+            map.put(block, value);
+        }
+    }
+    public static void setBlockSetting(PerBlockSettingType setting, String block, float value) {
+        ArrayList<String> blocks = new ArrayList<>();
+        blocks.add(block);
+        setBlocksSetting(setting, blocks, value);
     }
 }
