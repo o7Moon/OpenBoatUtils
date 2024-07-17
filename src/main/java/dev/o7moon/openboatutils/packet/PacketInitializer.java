@@ -1,7 +1,6 @@
 package dev.o7moon.openboatutils.packet;
 
-import dev.o7moon.openboatutils.OpenBoatUtils;
-import dev.o7moon.openboatutils.packet.c2s.PacketVersion;
+import dev.o7moon.openboatutils.packet.c2s.*;
 import dev.o7moon.openboatutils.packet.s2c.*;
 
 public final class PacketInitializer {
