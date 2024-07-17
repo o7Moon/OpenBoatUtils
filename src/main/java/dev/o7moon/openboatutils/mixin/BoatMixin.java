@@ -73,7 +73,7 @@ public abstract class BoatMixin {
     }
 
     BoatEntity.Location hookCheckLocation(BoatEntity instance, boolean is_tick) {
-        instance.setStepHeight(0f);
+        OpenBoatUtils.currentStepHeight = 0f;
 
         BoatEntity.Location loc = this.checkLocation();
         BoatEntity.Location original_loc = loc;
@@ -89,7 +89,7 @@ public abstract class BoatMixin {
         if (!boat.equals(instance)) return loc;
         if (is_tick) oncePerTick(instance, loc, minecraft);
 
-        instance.setStepHeight(OpenBoatUtils.getStepSize());
+        OpenBoatUtils.currentStepHeight = OpenBoatUtils.getStepSize();
 
         if (loc == BoatEntity.Location.UNDER_WATER || loc == BoatEntity.Location.UNDER_FLOWING_WATER) {
             if (OpenBoatUtils.waterElevation) {
@@ -140,7 +140,7 @@ public abstract class BoatMixin {
     private void redirectYawVelocityIncrement(BoatEntity boat, float yawVelocity) {
         if (!OpenBoatUtils.enabled) {
             this.yawVelocity = yawVelocity;
-            return;
+            
         }
         float original_delta = yawVelocity - this.yawVelocity;
         // sign isn't needed here because the vanilla acceleration is exactly 1,

@@ -1,24 +1,14 @@
 package dev.o7moon.openboatutils;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import dev.o7moon.openboatutils.packet.PacketInitializer;
+import dev.o7moon.openboatutils.packet.c2s.PacketVersion;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -27,17 +17,15 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static net.minecraft.server.command.CommandManager.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class OpenBoatUtils implements ModInitializer {
     @Override
     public void onInitialize() {
-        ServerboundPackets.registerHandlers();
+        PacketInitializer.initS2CPackets();
 
         SingleplayerCommands.registerCommands();
     }
@@ -45,9 +33,6 @@ public class OpenBoatUtils implements ModInitializer {
     public static final Logger LOG = LoggerFactory.getLogger("OpenBoatUtils");
 
     public static final int VERSION = 6;
-
-    public static final Identifier settingsChannel = new Identifier("openboatutils","settings");
-
 
     public static boolean enabled = false;
     public static boolean fallDamage = true;
@@ -69,6 +54,8 @@ public class OpenBoatUtils implements ModInitializer {
     public static boolean waterJumping = false;
     public static float swimForce = 0.0f;
 
+    public static float currentStepHeight = 0f;
+
     public static HashMap<String, Float> vanillaSlipperinessMap;
 
     public static HashMap<String, Float> slipperinessMap;/* = new HashMap<>(){{
@@ -79,7 +66,7 @@ public class OpenBoatUtils implements ModInitializer {
         put("minecraft:frosted_ice",0.98f);
     }};*/
 
-    enum PerBlockSettingType {
+    public enum PerBlockSettingType {
         jumpForce,
         forwardsAccel,
         backwardsAccel,
@@ -238,10 +225,7 @@ public class OpenBoatUtils implements ModInitializer {
     }
 
     public static void sendVersionPacket(){
-        PacketByteBuf packet = PacketByteBufs.create();
-        packet.writeShort(ServerboundPackets.VERSION.ordinal());
-        packet.writeInt(VERSION);
-        ClientPlayNetworking.send(settingsChannel, packet);
+        ClientPlayNetworking.send(new PacketVersion(VERSION));
     }
 
     public static void setGravityForce(double g){
