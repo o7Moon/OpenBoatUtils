@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "openboatutils",
+  "version": "${version}",
+  "name": "OpenBoatUtils",
+  "description": "",
+  "authors": ["o7Moon"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/openboatutils/OpenBoatUtils_small_square.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "dev.o7moon.openboatutils.client.OpenBoatUtilsClient"
+    ],
+    "main": [
+      "dev.o7moon.openboatutils.OpenBoatUtils"
+    ]
+  },
+  "mixins": [
+    "openboatutils.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version_allowed_range}"
+  }
+}
