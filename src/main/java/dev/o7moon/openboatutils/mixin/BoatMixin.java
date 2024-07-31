@@ -59,7 +59,7 @@ public abstract class BoatMixin implements GetStepHeight {
         /*openboatutils_step_height = f;
         *///?}
         //? <=1.20.1 {
-        ((BoatEntity) (Object) this).setStepHeight(0f);
+        ((BoatEntity) (Object) this).setStepHeight(f);
         //?}
     }
 
