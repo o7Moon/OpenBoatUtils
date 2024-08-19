@@ -38,6 +38,12 @@ public enum ClientboundPackets {
     EXCLUSIVE_MODE_SERIES,
     SET_PER_BLOCK;
 
+    public static void registerCodecs() {
+        //? >=1.21 {
+        /*PayloadTypeRegistry.playS2C().register(OpenBoatUtils.BytePayload.ID, OpenBoatUtils.BytePayload.CODEC);*/
+        //? }
+    }
+
     public static void registerHandlers(){
         //? <=1.20.1 {
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
@@ -45,8 +51,7 @@ public enum ClientboundPackets {
         });
         //?}
         //? >=1.21 {
-        /*PayloadTypeRegistry.playS2C().register(OpenBoatUtils.BytePayload.ID, OpenBoatUtils.BytePayload.CODEC);
-        ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.BytePayload.ID, ((payload, context) ->
+        /*ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.BytePayload.ID, ((payload, context) ->
                 context.client().execute(() ->
                     handlePacket(new PacketByteBuf(Unpooled.wrappedBuffer(payload.data()))) )));
         *///?}
