@@ -34,6 +34,9 @@ public class OpenBoatUtils implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ClientboundPackets.registerCodecs();
+        ServerboundPackets.registerCodecs();
+
         ServerboundPackets.registerHandlers();
 
         SingleplayerCommands.registerCommands();
