@@ -1,4 +1,4 @@
-> <img src="https://github.com/o7Moon/OpenBoatUtils/blob/0.4.1/src/main/resources/assets/openboatutils/OpenBoatUtils.png?raw=true" width = 300>
+> <img src="https://github.com/o7Moon/OpenBoatUtils/blob/main/src/main/resources/assets/openboatutils/OpenBoatUtils.png?raw=true" width = 300>
 
 
 # OpenBoatUtils
