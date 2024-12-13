@@ -1,5 +1,6 @@
 package dev.o7moon.openboatutils.mixin;
 
+import dev.o7moon.openboatutils.CollisionMode;
 import dev.o7moon.openboatutils.GetStepHeight;
 import dev.o7moon.openboatutils.OpenBoatUtils;
 import net.minecraft.block.Block;
@@ -145,6 +146,23 @@ public abstract class BoatMixin implements GetStepHeight {
     float getFriction(Block block) {
         if (!OpenBoatUtils.enabled) return block.getSlipperiness();
         return OpenBoatUtils.getBlockSlipperiness(Registries.BLOCK.getId(block).toString());
+    }
+
+    @Inject(method = "collidesWith", at = @At("HEAD"), cancellable = true)
+    void canCollideHook(Entity other, CallbackInfoReturnable<Boolean> ci) {
+        if (!OpenBoatUtils.enabled) return;
+        CollisionMode mode = OpenBoatUtils.getCollisionMode();
+        if (mode == CollisionMode.VANILLA) return;
+        if (mode == CollisionMode.NO_BOATS_OR_PLAYERS && (other instanceof BoatEntity || other instanceof PlayerEntity)) {
+            ci.setReturnValue(false);
+            ci.cancel();
+            return;
+        }
+        if (mode == CollisionMode.NO_ENTITIES) {
+            ci.setReturnValue(false);
+            ci.cancel();
+            return;
+        }
     }
 
     @Inject(method = "fall", at = @At("HEAD"), cancellable = true)

@@ -36,12 +36,13 @@ public enum ClientboundPackets {
     CLEAR_SLIPPERINESS,
     MODE_SERIES,
     EXCLUSIVE_MODE_SERIES,
-    SET_PER_BLOCK;
+    SET_PER_BLOCK,
+    SET_COLLISION_MODE;
 
     public static void registerCodecs() {
         //? >=1.21 {
-        /*PayloadTypeRegistry.playS2C().register(OpenBoatUtils.BytePayload.ID, OpenBoatUtils.BytePayload.CODEC);*/
-        //? }
+        /*PayloadTypeRegistry.playS2C().register(OpenBoatUtils.BytePayload.ID, OpenBoatUtils.BytePayload.CODEC);
+        *///?}
     }
 
     public static void registerHandlers(){
@@ -179,6 +180,10 @@ public enum ClientboundPackets {
                     blocks = buf.readString();
                     blocksArray = blocks.split(",");
                     OpenBoatUtils.setBlocksSetting(OpenBoatUtils.PerBlockSettingType.values()[setting], Arrays.asList(blocksArray), value);
+                    return;
+                case 27:
+                    short cmode = buf.readShort();
+                    OpenBoatUtils.setCollisionMode(CollisionMode.values()[cmode]);
                     return;
             }
         } catch (Exception E) {

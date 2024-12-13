@@ -411,6 +411,19 @@ public class SingleplayerCommands {
                         return 1;
                     }))))
             );
+
+            dispatcher.register(
+                    literal("collisionmode").then(argument("ID", IntegerArgumentType.integer(0,2)).executes(ctx -> {
+                                ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                if (player == null) return 0;
+                                PacketByteBuf packet = PacketByteBufs.create();
+                                packet.writeShort(ClientboundPackets.SET_COLLISION_MODE.ordinal());
+                                packet.writeShort(IntegerArgumentType.getInteger(ctx, "ID"));
+                                OpenBoatUtils.sendPacketS2C(player, packet);
+                                return 1;
+                            })
+                    )
+            );
         });
     }
 }

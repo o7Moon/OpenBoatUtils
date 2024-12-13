@@ -10,8 +10,8 @@ public enum ServerboundPackets {
 
     public static void registerCodecs() {
         //? >=1.21 {
-        /*PayloadTypeRegistry.playC2S().register(OpenBoatUtils.BytePayload.ID, OpenBoatUtils.BytePayload.CODEC);*/
-        //? }
+        /*PayloadTypeRegistry.playC2S().register(OpenBoatUtils.BytePayload.ID, OpenBoatUtils.BytePayload.CODEC);
+        *///?}
     }
 
     public static void registerHandlers(){
