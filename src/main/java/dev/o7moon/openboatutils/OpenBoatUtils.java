@@ -44,7 +44,7 @@ public class OpenBoatUtils implements ModInitializer {
 
     public static final Logger LOG = LoggerFactory.getLogger("OpenBoatUtils");
 
-    public static final int VERSION = 10;
+    public static final int VERSION = 11;
 
     public static final Identifier settingsChannel = Identifier.of("openboatutils","settings");
 
@@ -68,6 +68,7 @@ public class OpenBoatUtils implements ModInitializer {
     public static boolean waterJumping = false;
     public static float swimForce = 0.0f;
     public static CollisionMode collision = CollisionMode.VANILLA;
+    public static boolean canStepWhileFalling = false; // Setting to true fixes "boatutils jank"
 
     public static HashMap<String, Float> vanillaSlipperinessMap;
 
@@ -174,6 +175,7 @@ public class OpenBoatUtils implements ModInitializer {
         slipperinessMap = new HashMap<>(getVanillaSlipperinessMap());
         perBlockSettings = new HashMap<>();
         collision = CollisionMode.VANILLA;
+        canStepWhileFalling = false;
     }
 
     public static void setStepSize(float stepsize){
@@ -396,5 +398,13 @@ public class OpenBoatUtils implements ModInitializer {
 
     public static CollisionMode getCollisionMode() {
         return collision;
+    }
+
+    public static boolean canStepWhileFalling() {
+        return canStepWhileFalling;
+    }
+
+    public static void setCanStepWhileFalling(boolean canStepWhileFalling) {
+        OpenBoatUtils.canStepWhileFalling = canStepWhileFalling;
     }
 }

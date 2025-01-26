@@ -37,7 +37,8 @@ public enum ClientboundPackets {
     MODE_SERIES,
     EXCLUSIVE_MODE_SERIES,
     SET_PER_BLOCK,
-    SET_COLLISION_MODE;
+    SET_COLLISION_MODE,
+    SET_STEP_WHILE_FALLING;
 
     public static void registerCodecs() {
         //? >=1.21 {
@@ -184,6 +185,10 @@ public enum ClientboundPackets {
                 case 27:
                     short cmode = buf.readShort();
                     OpenBoatUtils.setCollisionMode(CollisionMode.values()[cmode]);
+                    return;
+                case 28:
+                    enabled = buf.readBoolean();
+                    OpenBoatUtils.setCanStepWhileFalling(enabled);
                     return;
             }
         } catch (Exception E) {
