@@ -1,7 +1,5 @@
 package dev.o7moon.openboatutils;
 
-import java.util.ArrayList;
-
 public enum Modes {
     BROKEN_SLIME_RALLY,//0
     BROKEN_SLIME_RALLY_BLUE,//1
