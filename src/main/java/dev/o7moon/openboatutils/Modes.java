@@ -23,8 +23,8 @@ public enum Modes {
     DEFAULT_BLUE_ICE,//19
     NOCOL_BOATS_AND_PLAYERS,//20
     NOCOL_ALL_ENTITIES,//21
-    BA_JANKLESS,
-    BA_BLUE_JANKLESS
+    BA_JANKLESS,//22
+    BA_BLUE_JANKLESS//23
     ;
 
     public static void setMode(Modes mode) {
