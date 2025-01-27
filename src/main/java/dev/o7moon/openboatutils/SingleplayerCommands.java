@@ -424,6 +424,18 @@ public class SingleplayerCommands {
                             })
                     )
             );
+
+            dispatcher.register(
+                    literal("stepwhilefalling").then(argument("enabled", BoolArgumentType.bool()).executes(ctx -> {
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.SET_STEP_WHILE_FALLING.ordinal());
+                        packet.writeBoolean(BoolArgumentType.getBool(ctx, "enabled"));
+                        OpenBoatUtils.sendPacketS2C(player, packet);
+                        return 1;
+                    }))
+            );
         });
     }
 }

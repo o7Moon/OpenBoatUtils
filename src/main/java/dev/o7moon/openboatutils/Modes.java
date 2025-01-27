@@ -1,7 +1,5 @@
 package dev.o7moon.openboatutils;
 
-import java.util.ArrayList;
-
 public enum Modes {
     BROKEN_SLIME_RALLY,//0
     BROKEN_SLIME_RALLY_BLUE,//1
@@ -25,6 +23,8 @@ public enum Modes {
     DEFAULT_BLUE_ICE,//19
     NOCOL_BOATS_AND_PLAYERS,//20
     NOCOL_ALL_ENTITIES,//21
+    BA_JANKLESS,
+    BA_BLUE_JANKLESS
     ;
 
     public static void setMode(Modes mode) {
@@ -162,6 +162,20 @@ public enum Modes {
                 return;
             case NOCOL_ALL_ENTITIES:
                 OpenBoatUtils.setCollisionMode(CollisionMode.NO_ENTITIES);
+                return;
+            case BA_JANKLESS:
+                OpenBoatUtils.setCanStepWhileFalling(true);
+                OpenBoatUtils.setAirControl(true);
+                OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.98f);
+                OpenBoatUtils.setStepSize(1.25f);
+                OpenBoatUtils.setWaterElevation(true);
+                return;
+            case BA_BLUE_JANKLESS:
+                OpenBoatUtils.setCanStepWhileFalling(true);
+                OpenBoatUtils.setAirControl(true);
+                OpenBoatUtils.setBlockSlipperiness("minecraft:air", 0.989f);
+                OpenBoatUtils.setStepSize(1.25f);
+                OpenBoatUtils.setWaterElevation(true);
                 return;
         }
     }
