@@ -9,9 +9,7 @@
   "client": [
     "BoatMixin",
     "ClientWorldMixin",
-    //? >=1.21 {
-    /*"EntityMixin"
-    *///?}
+    "EntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
