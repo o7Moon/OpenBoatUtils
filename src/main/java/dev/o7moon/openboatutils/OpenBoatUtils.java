@@ -8,6 +8,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
+//? >=1.21.3 {
+/*import net.minecraft.entity.vehicle.AbstractBoatEntity;
+*///?}
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.network.PacketByteBuf;
 //? >=1.21 {
@@ -44,7 +47,7 @@ public class OpenBoatUtils implements ModInitializer {
 
     public static final Logger LOG = LoggerFactory.getLogger("OpenBoatUtils");
 
-    public static final int VERSION = 11;
+    public static final int VERSION = 12;
 
     public static final Identifier settingsChannel = Identifier.of("openboatutils","settings");
 
@@ -104,7 +107,14 @@ public class OpenBoatUtils implements ModInitializer {
         return settingHasPerBlock(setting) && perBlockSettings.get(setting.ordinal()).containsKey(blockid) ? perBlockSettings.get(setting.ordinal()).get(blockid): defaultPerBlock(setting);
     }
 
+    // i LOVE how intellij formats this
+    //? >=1.21.3 {
+    /*public static float getNearbySetting(AbstractBoatEntity instance, PerBlockSettingType setting) {
+        *///?}
+    //? <=1.21 {
+        
     public static float getNearbySetting(BoatEntity instance, PerBlockSettingType setting) {
+        //?}
         Box box = instance.getBoundingBox();
         Box box2 = new Box(box.minX, box.minY - 0.001, box.minZ, box.maxX, box.minY, box.maxZ);
         int i = MathHelper.floor(box2.minX) - 1;
@@ -352,27 +362,53 @@ public class OpenBoatUtils implements ModInitializer {
         slipperinessMap = new HashMap<>();
     }
 
+    //? >=1.21.3 {
+    /*public static float GetJumpForce(AbstractBoatEntity boat) {
+        *///?}
+    //? <=1.21 {
     public static float GetJumpForce(BoatEntity boat) {
+     
+    //?}
         if (!settingHasPerBlock(PerBlockSettingType.jumpForce)) return jumpForce;
         else return getNearbySetting(boat, PerBlockSettingType.jumpForce);
     }
 
+    //? >=1.21.3 {
+    /*public static float GetYawAccel(AbstractBoatEntity boat) {
+        *///?}
+    //? <=1.21 {
     public static float GetYawAccel(BoatEntity boat) {
+    //?}
         if (!settingHasPerBlock(PerBlockSettingType.yawAccel)) return yawAcceleration;
         else return getNearbySetting(boat, PerBlockSettingType.yawAccel);
     }
 
+    //? >=1.21.3 {
+    /*public static float GetForwardAccel(AbstractBoatEntity boat) {
+        *///?}
+    //? <=1.21 {
     public static float GetForwardAccel(BoatEntity boat) {
+    //?}
         if (!settingHasPerBlock(PerBlockSettingType.forwardsAccel)) return forwardsAcceleration;
         else return getNearbySetting(boat, PerBlockSettingType.forwardsAccel);
     }
 
+    //? >=1.21.3 {
+    /*public static float GetBackwardAccel(AbstractBoatEntity boat) {
+    *///?}
+    //? <=1.21 {
     public static float GetBackwardAccel(BoatEntity boat) {
+    //?}
         if (!settingHasPerBlock(PerBlockSettingType.backwardsAccel)) return backwardsAcceleration;
         else return getNearbySetting(boat, PerBlockSettingType.backwardsAccel);
     }
 
+    //? >=1.21.3 {
+    /*public static float GetTurnForwardAccel(AbstractBoatEntity boat) {
+    *///?}
+    //? <=1.21 {
     public static float GetTurnForwardAccel(BoatEntity boat) {
+    //?}
         if (!settingHasPerBlock(PerBlockSettingType.turnForwardsAccel)) return turningForwardsAcceleration;
         else return getNearbySetting(boat, PerBlockSettingType.turnForwardsAccel);
     }
