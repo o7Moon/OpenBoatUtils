@@ -436,6 +436,18 @@ public class SingleplayerCommands {
                         return 1;
                     }))
             );
+
+            dispatcher.register(
+                    literal("setinterpolationten").then(argument("enabled", BoolArgumentType.bool()).executes(ctx -> {
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.SET_INTERPOLATION_COMPAT.ordinal());
+                        packet.writeBoolean(BoolArgumentType.getBool(ctx, "enabled"));
+                        OpenBoatUtils.sendPacketS2C(player, packet);
+                        return 1;
+                    }))
+            );
         });
     }
 }

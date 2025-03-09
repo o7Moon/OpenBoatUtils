@@ -2,6 +2,7 @@ package dev.o7moon.openboatutils;
 
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -43,6 +44,18 @@ public class OpenBoatUtils implements ModInitializer {
         ServerboundPackets.registerHandlers();
 
         SingleplayerCommands.registerCommands();
+
+        ClientPlayConnectionEvents.INIT.register((handler, client) -> {
+            resetAll();
+        });
+    }
+
+    public static void resetAll(){
+        // reset the default context
+        resetSettings();
+
+        // reset additional non-context state
+        interpolationCompat = false;
     }
 
     public static final Logger LOG = LoggerFactory.getLogger("OpenBoatUtils");
@@ -76,6 +89,12 @@ public class OpenBoatUtils implements ModInitializer {
     public static HashMap<String, Float> vanillaSlipperinessMap;
 
     public static HashMap<String, Float> slipperinessMap;
+
+    // non-context settings, don't reset with the rest but reset when joining a server (could persist on proxies)
+    // there is a separate reset packet that includes these, but the original ones are for resetting the
+    // active context rather than the entire state of the mod.
+
+    public static boolean interpolationCompat = false;
 
     public enum PerBlockSettingType {
         jumpForce,
@@ -441,6 +460,11 @@ public class OpenBoatUtils implements ModInitializer {
     }
 
     public static void setCanStepWhileFalling(boolean canStepWhileFalling) {
+        enabled = true;
         OpenBoatUtils.canStepWhileFalling = canStepWhileFalling;
+    }
+
+    public static void setInterpolationCompat(boolean interpolationCompat) {
+        OpenBoatUtils.interpolationCompat = interpolationCompat;
     }
 }
