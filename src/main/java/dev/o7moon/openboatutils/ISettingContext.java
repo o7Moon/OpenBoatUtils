@@ -8,6 +8,8 @@ import java.util.List;
 // TODO impl the default context to see how well this api functions.
 // it may need to become an abstract class
 
+// this is unfinished, leaving it unused rn so i can release ten step interpolation asap
+
 public interface ISettingContext {
     boolean enabled();
     boolean settingHasPerBlock(OpenBoatUtils.PerBlockSettingType setting);
