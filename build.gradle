@@ -98,3 +98,7 @@ loom {
         runDir "../../run" // Use a shared run folder and just create separate worlds
     }
 }
+
+stonecutter.swap("boat") {
+    stonecutter.compare(stonecutter.current.version, "1.21.3") < 0 ? "BoatEntity" : "AbstractBoatEntity"
+}

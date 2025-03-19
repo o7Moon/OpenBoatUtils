@@ -38,7 +38,8 @@ public enum ClientboundPackets {
     EXCLUSIVE_MODE_SERIES,
     SET_PER_BLOCK,
     SET_COLLISION_MODE,
-    SET_STEP_WHILE_FALLING;
+    SET_STEP_WHILE_FALLING,
+    SET_INTERPOLATION_COMPAT;
 
     public static void registerCodecs() {
         //? >=1.21 {
@@ -189,6 +190,10 @@ public enum ClientboundPackets {
                 case 28:
                     enabled = buf.readBoolean();
                     OpenBoatUtils.setCanStepWhileFalling(enabled);
+                    return;
+                case 29:
+                    enabled = buf.readBoolean();
+                    OpenBoatUtils.setInterpolationCompat(enabled);
                     return;
             }
         } catch (Exception E) {
