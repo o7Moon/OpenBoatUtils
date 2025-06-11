@@ -15,9 +15,9 @@ import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.network.PacketByteBuf;
 //? >=1.21 {
-/*import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
-*///?}
+//?}
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -95,6 +95,8 @@ public class OpenBoatUtils implements ModInitializer {
     // active context rather than the entire state of the mod.
 
     public static boolean interpolationCompat = false;
+
+    public static int collisionResolution = 1;// How many times the move() function is called per tick on a boat, higher values result in more smaller steps to reduce the distance to a diagonal wall before getting bumped by it. 1 is same as vanilla, higher values might cause performance issues.
 
     public enum PerBlockSettingType {
         jumpForce,
@@ -265,7 +267,7 @@ public class OpenBoatUtils implements ModInitializer {
     }
 
     //? >=1.21 {
-    /*public record BytePayload(ByteBuf data) implements CustomPayload {
+    public record BytePayload(ByteBuf data) implements CustomPayload {
         public static final PacketCodec<PacketByteBuf, BytePayload> CODEC = CustomPayload.codecOf(BytePayload::write, BytePayload::new);
         public static final Id<BytePayload> ID = new Id<>(settingsChannel);
 
@@ -283,26 +285,26 @@ public class OpenBoatUtils implements ModInitializer {
             return ID;
         }
     }
-    *///?}
+    //?}
 
     public static void sendPacketC2S(PacketByteBuf packet){
         //? <=1.20.1 {
-        assert settingsChannel != null;
+        /*assert settingsChannel != null;
         ClientPlayNetworking.send(settingsChannel, packet);
-        //?} else {
-        /*BytePayload payload = new BytePayload(packet);
+        *///?} else {
+        BytePayload payload = new BytePayload(packet);
         ClientPlayNetworking.send(payload);
-        *///?}
+        //?}
     }
 
     public static void sendPacketS2C(ServerPlayerEntity player, PacketByteBuf packet){
         //? <=1.20.1 {
-        assert settingsChannel != null;
+        /*assert settingsChannel != null;
         ServerPlayNetworking.send(player, settingsChannel, packet);
-        //?} else {
-        /*BytePayload payload = new BytePayload(packet);
+        *///?} else {
+        BytePayload payload = new BytePayload(packet);
         ServerPlayNetworking.send(player, payload);
-        *///?}
+        //?}
     }
 
     public static void setGravityForce(double g){
@@ -466,5 +468,9 @@ public class OpenBoatUtils implements ModInitializer {
 
     public static void setInterpolationCompat(boolean interpolationCompat) {
         OpenBoatUtils.interpolationCompat = interpolationCompat;
+    }
+
+    public static void setCollisionResolution(int collisionResolution) {
+        OpenBoatUtils.collisionResolution = collisionResolution;
     }
 }

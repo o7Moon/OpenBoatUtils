@@ -6,6 +6,7 @@ import dev.o7moon.openboatutils.OpenBoatUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.registry.Registries;
@@ -48,20 +49,20 @@ public abstract class BoatMixin implements GetStepHeight {
     boolean pressingBack;
 
     //? >=1.21 {
-    /*float openboatutils_step_height;
+    float openboatutils_step_height;
     public float getStepHeight() {
         return openboatutils_step_height;
     }
-    *///?}
+    //?}
 
     @Unique
     public void set_step_height(float f) {
         //? >=1.21 {
-        /*openboatutils_step_height = f;
-        *///?}
-        //? <=1.20.1 {
-        ((BoatEntity) (Object) this).setStepHeight(f);
+        openboatutils_step_height = f;
         //?}
+        //? <=1.20.1 {
+        /*((BoatEntity) (Object) this).setStepHeight(f);
+        *///?}
     }
 
 
@@ -171,22 +172,22 @@ public abstract class BoatMixin implements GetStepHeight {
     }
 
     //? <=1.20.1 {
-    @ModifyVariable(method = "updateVelocity", at = @At(value = "STORE"), ordinal = 1)
+    /*@ModifyVariable(method = "updateVelocity", at = @At(value = "STORE"), ordinal = 1)
     private double updateVelocityHook(double e){
         if (!OpenBoatUtils.enabled) return e;
 
         return OpenBoatUtils.gravityForce;
     }
-    //?}
+    *///?}
     //? >=1.21 {
-    /*@Inject(method = "getGravity", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getGravity", at = @At("HEAD"), cancellable = true)
     public void onGetGravity(CallbackInfoReturnable<Double> cir) {
         if (!OpenBoatUtils.enabled) return;
 
         cir.setReturnValue(-OpenBoatUtils.gravityForce);
         cir.cancel();
     }
-    *///?}
+    //?}
 
     @Redirect(method = "updatePaddles", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;yawVelocity:F", opcode = Opcodes.PUTFIELD))
     private void redirectYawVelocityIncrement(BoatEntity boat, float yawVelocity) {
@@ -250,5 +251,14 @@ public abstract class BoatMixin implements GetStepHeight {
     private void velocityDecayHook3(BoatEntity boat, float orig) {
         if (!OpenBoatUtils.enabled || !OpenBoatUtils.surfaceWaterControl) velocityDecay = orig;
         else velocityDecay = OpenBoatUtils.getBlockSlipperiness("minecraft:water");
+    }
+
+    // Increase resolution for wall priority by running move() multiple times in smaller increments
+    @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V"))
+    private void moveHook(BoatEntity instance, MovementType movementType, Vec3d vec3d) {
+        Vec3d subMoveVel = instance.getVelocity().multiply(1d / OpenBoatUtils.collisionResolution);
+        for(int i = 0; i < OpenBoatUtils.collisionResolution; i++) {
+            instance.move(MovementType.SELF, subMoveVel);
+        }
     }
 }

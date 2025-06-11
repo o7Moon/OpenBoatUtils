@@ -1,9 +1,9 @@
 package dev.o7moon.openboatutils;
 
 //? >=1.21 {
-/*import io.netty.buffer.Unpooled;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-*///?}
+//?}
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 
@@ -39,25 +39,26 @@ public enum ClientboundPackets {
     SET_PER_BLOCK,
     SET_COLLISION_MODE,
     SET_STEP_WHILE_FALLING,
-    SET_INTERPOLATION_COMPAT;
+    SET_INTERPOLATION_COMPAT,
+    SET_COLLISION_RESOLUTION;
 
     public static void registerCodecs() {
         //? >=1.21 {
-        /*PayloadTypeRegistry.playS2C().register(OpenBoatUtils.BytePayload.ID, OpenBoatUtils.BytePayload.CODEC);
-        *///?}
+        PayloadTypeRegistry.playS2C().register(OpenBoatUtils.BytePayload.ID, OpenBoatUtils.BytePayload.CODEC);
+        //?}
     }
 
     public static void registerHandlers(){
         //? <=1.20.1 {
-        ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
+        /*ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
             handlePacket(buf);
         });
-        //?}
+        *///?}
         //? >=1.21 {
-        /*ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.BytePayload.ID, ((payload, context) ->
+        ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.BytePayload.ID, ((payload, context) ->
                 context.client().execute(() ->
                     handlePacket(new PacketByteBuf(Unpooled.wrappedBuffer(payload.data()))) )));
-        *///?}
+        //?}
     }
 
     public static void handlePacket(PacketByteBuf buf) {
@@ -194,6 +195,10 @@ public enum ClientboundPackets {
                 case 29:
                     enabled = buf.readBoolean();
                     OpenBoatUtils.setInterpolationCompat(enabled);
+                    return;
+                case 30:
+                    int collisionResolution = buf.readInt();
+                    OpenBoatUtils.setCollisionResolution(collisionResolution);
                     return;
             }
         } catch (Exception E) {
