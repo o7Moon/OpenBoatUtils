@@ -17,20 +17,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EntityMixin {
 
     //? >=1.21 {
-    @Inject(method = "getStepHeight", at = @At("HEAD"), cancellable = true)
+    /*@Inject(method = "getStepHeight", at = @At("HEAD"), cancellable = true)
     public void getStepHeight(CallbackInfoReturnable<Float> cir) {
         //? >=1.21.3 {
-        /*if ((Object) this instanceof AbstractBoatEntity) {
-        *///?}
-        //? <=1.21 {
-        if ((Object) this instanceof BoatEntity) {
+        if ((Object) this instanceof AbstractBoatEntity) {
         //?}
+        //? <=1.21 {
+        /^if ((Object) this instanceof BoatEntity) {
+        ^///?}
             GetStepHeight step = (GetStepHeight) this;
             cir.setReturnValue(step.getStepHeight());
             cir.cancel();
         }
     }
-    //?}
+    *///?}
 
     @ModifyVariable(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At("STORE"), ordinal = 3)
     private boolean hookStepHeightOnGroundCheck(boolean original) {

@@ -49,20 +49,20 @@ public abstract class BoatMixin implements GetStepHeight {
     boolean pressingBack;
 
     //? >=1.21 {
-    float openboatutils_step_height;
+    /*float openboatutils_step_height;
     public float getStepHeight() {
         return openboatutils_step_height;
     }
-    //?}
+    *///?}
 
     @Unique
     public void set_step_height(float f) {
         //? >=1.21 {
-        openboatutils_step_height = f;
-        //?}
-        //? <=1.20.1 {
-        /*((BoatEntity) (Object) this).setStepHeight(f);
+        /*openboatutils_step_height = f;
         *///?}
+        //? <=1.20.1 {
+        ((BoatEntity) (Object) this).setStepHeight(f);
+        //?}
     }
 
 
@@ -172,22 +172,22 @@ public abstract class BoatMixin implements GetStepHeight {
     }
 
     //? <=1.20.1 {
-    /*@ModifyVariable(method = "updateVelocity", at = @At(value = "STORE"), ordinal = 1)
+    @ModifyVariable(method = "updateVelocity", at = @At(value = "STORE"), ordinal = 1)
     private double updateVelocityHook(double e){
         if (!OpenBoatUtils.enabled) return e;
 
         return OpenBoatUtils.gravityForce;
     }
-    *///?}
+    //?}
     //? >=1.21 {
-    @Inject(method = "getGravity", at = @At("HEAD"), cancellable = true)
+    /*@Inject(method = "getGravity", at = @At("HEAD"), cancellable = true)
     public void onGetGravity(CallbackInfoReturnable<Double> cir) {
         if (!OpenBoatUtils.enabled) return;
 
         cir.setReturnValue(-OpenBoatUtils.gravityForce);
         cir.cancel();
     }
-    //?}
+    *///?}
 
     @Redirect(method = "updatePaddles", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;yawVelocity:F", opcode = Opcodes.PUTFIELD))
     private void redirectYawVelocityIncrement(BoatEntity boat, float yawVelocity) {

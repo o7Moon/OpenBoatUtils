@@ -15,9 +15,9 @@ import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.network.PacketByteBuf;
 //? >=1.21 {
-import net.minecraft.network.codec.PacketCodec;
+/*import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
-//?}
+*///?}
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -267,7 +267,7 @@ public class OpenBoatUtils implements ModInitializer {
     }
 
     //? >=1.21 {
-    public record BytePayload(ByteBuf data) implements CustomPayload {
+    /*public record BytePayload(ByteBuf data) implements CustomPayload {
         public static final PacketCodec<PacketByteBuf, BytePayload> CODEC = CustomPayload.codecOf(BytePayload::write, BytePayload::new);
         public static final Id<BytePayload> ID = new Id<>(settingsChannel);
 
@@ -285,26 +285,26 @@ public class OpenBoatUtils implements ModInitializer {
             return ID;
         }
     }
-    //?}
+    *///?}
 
     public static void sendPacketC2S(PacketByteBuf packet){
         //? <=1.20.1 {
-        /*assert settingsChannel != null;
+        assert settingsChannel != null;
         ClientPlayNetworking.send(settingsChannel, packet);
-        *///?} else {
-        BytePayload payload = new BytePayload(packet);
+        //?} else {
+        /*BytePayload payload = new BytePayload(packet);
         ClientPlayNetworking.send(payload);
-        //?}
+        *///?}
     }
 
     public static void sendPacketS2C(ServerPlayerEntity player, PacketByteBuf packet){
         //? <=1.20.1 {
-        /*assert settingsChannel != null;
+        assert settingsChannel != null;
         ServerPlayNetworking.send(player, settingsChannel, packet);
-        *///?} else {
-        BytePayload payload = new BytePayload(packet);
+        //?} else {
+        /*BytePayload payload = new BytePayload(packet);
         ServerPlayNetworking.send(player, payload);
-        //?}
+        *///?}
     }
 
     public static void setGravityForce(double g){
