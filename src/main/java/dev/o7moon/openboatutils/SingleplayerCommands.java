@@ -456,7 +456,7 @@ public class SingleplayerCommands {
                         int time = IntegerArgumentType.getInteger(ctx,"resolution");
                         PacketByteBuf packet = PacketByteBufs.create();
                         packet.writeShort(ClientboundPackets.SET_COLLISION_RESOLUTION.ordinal());
-                        packet.writeInt(time);
+                        packet.writeByte(time);
                         OpenBoatUtils.sendPacketS2C(player, packet);
                         return 1;
                     }))
