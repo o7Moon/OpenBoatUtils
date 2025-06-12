@@ -197,7 +197,7 @@ public enum ClientboundPackets {
                     OpenBoatUtils.setInterpolationCompat(enabled);
                     return;
                 case 30:
-                    int collisionResolution = buf.readByte();
+                    byte collisionResolution = buf.readByte();
                     OpenBoatUtils.setCollisionResolution(collisionResolution);
                     return;
             }
