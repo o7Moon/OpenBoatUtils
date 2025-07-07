@@ -15,7 +15,7 @@ public enum ServerboundPackets {
     }
 
     public static void registerHandlers(){
-        //? <=1.20.1 {
+        //? <=1.20.4 {
         ServerPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (server, player, handler, buf, responseSender) -> {
             handlePacket(buf);
         });

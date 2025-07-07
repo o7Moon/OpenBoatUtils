@@ -50,7 +50,7 @@ public abstract class ClientNetworkHandlerMixin {
     }
     *///?}
 
-    //? <=1.20.1 {
+    //? <=1.20.4 {
     @Redirect(method = {"onEntity"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateTrackedPositionAndAngles(DDDFFIZ)V"))
     private void onUpdateTrackedPositionAndAngles(Entity instance, double a, double b, double c, float d, float e, int interpolation, boolean interpolate){
         hook(instance, a, b, c, d, e, interpolation, interpolate);
