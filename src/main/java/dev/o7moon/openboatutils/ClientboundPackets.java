@@ -48,7 +48,7 @@ public enum ClientboundPackets {
     }
 
     public static void registerHandlers(){
-        //? <=1.20.1 {
+        //? <=1.20.4 {
         ClientPlayNetworking.registerGlobalReceiver(OpenBoatUtils.settingsChannel, (client, handler, buf, responseSender) -> {
             handlePacket(buf);
         });
