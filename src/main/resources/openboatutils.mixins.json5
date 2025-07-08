@@ -7,7 +7,6 @@
     "ServerPlayNetworkHandlerMixin"
   ],
   "client": [
-    "ClientNetworkHandlerMixin",
     //? <=1.21 {
     "BoatMixin",
     //?}

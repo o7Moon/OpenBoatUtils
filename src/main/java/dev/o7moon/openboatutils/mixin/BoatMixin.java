@@ -60,7 +60,7 @@ public abstract class BoatMixin implements GetStepHeight {
         //? >=1.21 {
         /*openboatutils_step_height = f;
         *///?}
-        //? <=1.20.1 {
+        //? <=1.20.4 {
         ((BoatEntity) (Object) this).setStepHeight(f);
         //?}
     }
@@ -171,7 +171,7 @@ public abstract class BoatMixin implements GetStepHeight {
         if (!OpenBoatUtils.fallDamage) ci.cancel();
     }
 
-    //? <=1.20.1 {
+    //? <=1.20.4 {
     @ModifyVariable(method = "updateVelocity", at = @At(value = "STORE"), ordinal = 1)
     private double updateVelocityHook(double e){
         if (!OpenBoatUtils.enabled) return e;
