@@ -96,6 +96,8 @@ public class OpenBoatUtils implements ModInitializer {
 
     public static boolean interpolationCompat = false;
 
+    public static byte collisionResolution = 1;// How many times the move() function is called per tick on a boat, higher values result in more smaller steps to reduce the distance to a diagonal wall before getting bumped by it. 1 is same as vanilla, higher values might cause performance issues.
+
     public enum PerBlockSettingType {
         jumpForce,
         forwardsAccel,
@@ -464,7 +466,14 @@ public class OpenBoatUtils implements ModInitializer {
         OpenBoatUtils.canStepWhileFalling = canStepWhileFalling;
     }
 
+    // doesn't deal with .enabled because its a non-context setting that is for the general runtime of obu
+    // and not a specific client boat
     public static void setInterpolationCompat(boolean interpolationCompat) {
         OpenBoatUtils.interpolationCompat = interpolationCompat;
+    }
+
+    public static void setCollisionResolution(byte collisionResolution) {
+        OpenBoatUtils.enabled = true;
+        OpenBoatUtils.collisionResolution = collisionResolution;
     }
 }

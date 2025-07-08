@@ -448,6 +448,19 @@ public class SingleplayerCommands {
                         return 1;
                     }))
             );
+
+            dispatcher.register(
+                    literal("setcollisionresolution").then(argument("resolution", IntegerArgumentType.integer(1, 50)).executes(ctx->{
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        int time = IntegerArgumentType.getInteger(ctx,"resolution");
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.SET_COLLISION_RESOLUTION.ordinal());
+                        packet.writeByte(time);
+                        OpenBoatUtils.sendPacketS2C(player, packet);
+                        return 1;
+                    }))
+            );
         });
     }
 }

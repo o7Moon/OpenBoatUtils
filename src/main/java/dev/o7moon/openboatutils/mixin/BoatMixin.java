@@ -6,6 +6,7 @@ import dev.o7moon.openboatutils.OpenBoatUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.registry.Registries;
@@ -250,5 +251,18 @@ public abstract class BoatMixin implements GetStepHeight {
     private void velocityDecayHook3(BoatEntity boat, float orig) {
         if (!OpenBoatUtils.enabled || !OpenBoatUtils.surfaceWaterControl) velocityDecay = orig;
         else velocityDecay = OpenBoatUtils.getBlockSlipperiness("minecraft:water");
+    }
+
+    // Increase resolution for wall priority by running move() multiple times in smaller increments
+    @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V"))
+    private void moveHook(BoatEntity instance, MovementType movementType, Vec3d vec3d) {
+        if (!OpenBoatUtils.enabled || OpenBoatUtils.collisionResolution < 1 || OpenBoatUtils.collisionResolution > 50) {
+            instance.move(movementType, vec3d);
+            return;
+        }
+        Vec3d subMoveVel = instance.getVelocity().multiply(1d / OpenBoatUtils.collisionResolution);
+        for(int i = 0; i < OpenBoatUtils.collisionResolution; i++) {
+            instance.move(movementType, subMoveVel);
+        }
     }
 }

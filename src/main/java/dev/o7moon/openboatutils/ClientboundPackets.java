@@ -39,7 +39,8 @@ public enum ClientboundPackets {
     SET_PER_BLOCK,
     SET_COLLISION_MODE,
     SET_STEP_WHILE_FALLING,
-    SET_INTERPOLATION_COMPAT;
+    SET_INTERPOLATION_COMPAT,
+    SET_COLLISION_RESOLUTION;
 
     public static void registerCodecs() {
         //? >=1.21 {
@@ -194,6 +195,10 @@ public enum ClientboundPackets {
                 case 29:
                     enabled = buf.readBoolean();
                     OpenBoatUtils.setInterpolationCompat(enabled);
+                    return;
+                case 30:
+                    byte collisionResolution = buf.readByte();
+                    OpenBoatUtils.setCollisionResolution(collisionResolution);
                     return;
             }
         } catch (Exception E) {
