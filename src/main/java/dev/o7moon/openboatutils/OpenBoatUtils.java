@@ -466,11 +466,14 @@ public class OpenBoatUtils implements ModInitializer {
         OpenBoatUtils.canStepWhileFalling = canStepWhileFalling;
     }
 
+    // doesn't deal with .enabled because its a non-context setting that is for the general runtime of obu
+    // and not a specific client boat
     public static void setInterpolationCompat(boolean interpolationCompat) {
         OpenBoatUtils.interpolationCompat = interpolationCompat;
     }
 
     public static void setCollisionResolution(byte collisionResolution) {
+        OpenBoatUtils.enabled = true;
         OpenBoatUtils.collisionResolution = collisionResolution;
     }
 }
