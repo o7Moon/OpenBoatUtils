@@ -40,7 +40,9 @@ public enum ClientboundPackets {
     SET_COLLISION_MODE,
     SET_STEP_WHILE_FALLING,
     SET_INTERPOLATION_COMPAT,
-    SET_COLLISION_RESOLUTION;
+    SET_COLLISION_RESOLUTION,
+    ADD_COLLISION_ENTITYTYPE_FILTER,
+    CLEAR_COLLISION_ENTITYTYPE_FILTER;
 
     public static void registerCodecs() {
         //? >=1.21 {
@@ -199,6 +201,13 @@ public enum ClientboundPackets {
                 case 30:
                     byte collisionResolution = buf.readByte();
                     OpenBoatUtils.setCollisionResolution(collisionResolution);
+                    return;
+                case 31:
+                    String entitytypes = buf.readString();
+                    OpenBoatUtils.addToCollisionFilter(entitytypes);
+                    return;
+                case 32:
+                    OpenBoatUtils.clearCollisionFilter();
                     return;
             }
         } catch (Exception E) {
