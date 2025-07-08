@@ -163,6 +163,12 @@ public abstract class AbstractBoatMixin implements GetStepHeight {
         if (!OpenBoatUtils.fallDamage) ci.cancel();
     }
 
+    @ModifyVariable(method = "updateTrackedPositionAndAngles", at = @At("HEAD"), ordinal = 0)
+    int interpolationStepsHook(int interpolationSteps) {
+        if (!OpenBoatUtils.enabled || !OpenBoatUtils.interpolationCompat) return interpolationSteps;
+        return 10;
+    }
+
     @Inject(method = "getGravity", at = @At("HEAD"), cancellable = true)
     public void onGetGravity(CallbackInfoReturnable<Double> cir) {
         if (!OpenBoatUtils.enabled) return;
