@@ -413,7 +413,7 @@ public class SingleplayerCommands {
             );
 
             dispatcher.register(
-                    literal("collisionmode").then(argument("ID", IntegerArgumentType.integer(0,2)).executes(ctx -> {
+                    literal("collisionmode").then(argument("ID", IntegerArgumentType.integer(0,CollisionMode.values().length - 1)).executes(ctx -> {
                                 ServerPlayerEntity player = ctx.getSource().getPlayer();
                                 if (player == null) return 0;
                                 PacketByteBuf packet = PacketByteBufs.create();
@@ -461,6 +461,30 @@ public class SingleplayerCommands {
                         return 1;
                     }))
             );
+
+            dispatcher.register(
+                    literal("clearcollisionfilter").executes(ctx->{
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.CLEAR_COLLISION_ENTITYTYPE_FILTER.ordinal());
+                        OpenBoatUtils.sendPacketS2C(player, packet);
+                        return 1;
+                    })
+            );
+
+            dispatcher.register(
+                    literal("addcollisionfilter").then(argument("entitytypes", StringArgumentType.greedyString()).executes(ctx->{
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        if (player == null) return 0;
+                        String entities = StringArgumentType.getString(ctx, "entitytypes").trim();
+                        PacketByteBuf packet = PacketByteBufs.create();
+                        packet.writeShort(ClientboundPackets.ADD_COLLISION_ENTITYTYPE_FILTER.ordinal());
+                        packet.writeString(entities);
+                        OpenBoatUtils.sendPacketS2C(player, packet);
+                        return 1;
+                    })
+            ));
         });
     }
 }
