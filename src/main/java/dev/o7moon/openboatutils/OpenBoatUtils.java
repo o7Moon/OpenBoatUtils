@@ -12,6 +12,7 @@ import net.minecraft.block.LilyPadBlock;
 //? >=1.21.3 {
 /*import net.minecraft.entity.vehicle.AbstractBoatEntity;
 *///?}
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.network.PacketByteBuf;
 //? >=1.21 {
@@ -89,6 +90,7 @@ public class OpenBoatUtils implements ModInitializer {
     public static HashMap<String, Float> vanillaSlipperinessMap;
 
     public static HashMap<String, Float> slipperinessMap;
+    public static ArrayList<String> collision_filter;
 
     // non-context settings, don't reset with the rest but reset when joining a server (could persist on proxies)
     // there is a separate reset packet that includes these, but the original ones are for resetting the
@@ -206,6 +208,7 @@ public class OpenBoatUtils implements ModInitializer {
         slipperinessMap = new HashMap<>(getVanillaSlipperinessMap());
         perBlockSettings = new HashMap<>();
         collision = CollisionMode.VANILLA;
+        collision_filter = new ArrayList<>();
         canStepWhileFalling = false;
     }
 
@@ -475,5 +478,21 @@ public class OpenBoatUtils implements ModInitializer {
     public static void setCollisionResolution(byte collisionResolution) {
         OpenBoatUtils.enabled = true;
         OpenBoatUtils.collisionResolution = collisionResolution;
+    }
+
+    public static void clearCollisionFilter() {
+        // is the vanilla state, no need to turn on .enabled
+        OpenBoatUtils.collision_filter = new ArrayList<>();
+    }
+
+    public static void addToCollisionFilter(String s) {
+        for (String etype : s.split(",")) {
+            enabled = true;
+            OpenBoatUtils.collision_filter.add(etype);
+        }
+    }
+
+    public static boolean entityIsInCollisionFilter(Entity entity) {
+        return OpenBoatUtils.collision_filter.contains(Registries.ENTITY_TYPE.getId(entity.getType()).toString());
     }
 }
