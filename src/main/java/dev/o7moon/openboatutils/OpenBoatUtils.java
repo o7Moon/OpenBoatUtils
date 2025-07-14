@@ -61,7 +61,7 @@ public class OpenBoatUtils implements ModInitializer {
 
     public static final Logger LOG = LoggerFactory.getLogger("OpenBoatUtils");
 
-    public static final int VERSION = 15;
+    public static final int VERSION = 16;
 
     public static final Identifier settingsChannel = Identifier.of("openboatutils","settings");
 

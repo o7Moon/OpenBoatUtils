@@ -172,7 +172,7 @@ public abstract class AbstractBoatMixin implements GetStepHeight {
 
     @ModifyVariable(method = "updateTrackedPositionAndAngles", at = @At("HEAD"), ordinal = 0)
     int interpolationStepsHook(int interpolationSteps) {
-        if (!OpenBoatUtils.enabled || !OpenBoatUtils.interpolationCompat) return interpolationSteps;
+        if (!OpenBoatUtils.interpolationCompat) return interpolationSteps;
         return 10;
     }
 
