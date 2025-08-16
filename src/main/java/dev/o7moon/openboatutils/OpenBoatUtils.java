@@ -45,10 +45,6 @@ public class OpenBoatUtils implements ModInitializer {
         ServerboundPackets.registerHandlers();
 
         SingleplayerCommands.registerCommands();
-
-        ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-            resetAll();
-        });
     }
 
     public static void resetAll(){
