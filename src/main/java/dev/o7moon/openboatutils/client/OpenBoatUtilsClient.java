@@ -12,7 +12,7 @@ public class OpenBoatUtilsClient implements ClientModInitializer {
         ClientboundPackets.registerHandlers();
 
         ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-            OpenBoatUtils.resetSettings();
+            OpenBoatUtils.resetAll();
         });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
